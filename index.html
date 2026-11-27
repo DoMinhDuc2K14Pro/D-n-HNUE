@@ -4,36 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hồ Sơ Dự Án STEM Lớp 7: Mô Hình Tua-bin Phát Điện Gió Mini</title>
-    <!-- Tải Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font chữ Inter hỗ trợ tiếng Việt sắc nét -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        stemBlue: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            900: '#1e3a8a',
-                        },
-                        ecoGreen: {
-                            50: '#ecfdf5',
-                            100: '#d1fae5',
-                            500: '#10b981',
-                            600: '#059669',
-                            700: '#047857',
-                        }
                     }
                 }
             }
@@ -41,7 +23,7 @@
     </script>
 
     <style>
-        /* Tùy chỉnh thanh trượt tốc độ gió */
+        /* Thanh trượt tùy chỉnh */
         input[type="range"] {
             -webkit-appearance: none;
             appearance: none;
@@ -49,38 +31,65 @@
             cursor: pointer;
         }
         input[type="range"]::-webkit-slider-runnable-track {
-            height: 10px;
+            height: 8px;
             border-radius: 999px;
             background: #cbd5e1;
+        }
+        .dark input[type="range"]::-webkit-slider-runnable-track {
+            background: #334155;
         }
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
             margin-top: -6px;
             background-color: #2563eb;
-            height: 22px;
-            width: 22px;
+            height: 20px;
+            width: 20px;
             border-radius: 50%;
             border: 3px solid #ffffff;
-            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4);
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.45);
             transition: transform 0.15s ease;
         }
         input[type="range"]::-webkit-slider-thumb:hover {
             transform: scale(1.15);
         }
 
-        /* Hiệu ứng vệt gió bay ngang */
+        /* Luồng gió bay ngang */
         @keyframes windFlow {
-            0% { transform: translateX(-40px); opacity: 0; }
-            30% { opacity: 0.7; }
-            70% { opacity: 0.7; }
-            100% { transform: translateX(120px); opacity: 0; }
+            0% { transform: translateX(-35px); opacity: 0; }
+            25% { opacity: 0.8; }
+            75% { opacity: 0.8; }
+            100% { transform: translateX(115px); opacity: 0; }
         }
         .wind-streak {
             animation: windFlow linear infinite;
         }
 
-        /* Chế độ in hồ sơ gọn gàng */
+        /* Hiệu ứng lật thẻ Flashcard */
+        .flashcard-inner {
+            transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+        .flashcard-front, .flashcard-back {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .flashcard-back {
+            transform: rotateY(180deg);
+        }
+
+        /* Chế độ Thuyết trình */
+        body.presentation-mode {
+            font-size: 1.125rem;
+        }
+        body.presentation-mode .hide-in-presentation {
+            display: none !important;
+        }
+
+        /* Chế độ In A4 */
         @media print {
             .no-print {
                 display: none !important;
@@ -88,35 +97,32 @@
             body {
                 background: #ffffff !important;
                 color: #0f172a !important;
+                font-size: 11pt !important;
             }
             section {
                 break-inside: avoid;
                 page-break-inside: avoid;
-                padding-top: 1rem !important;
-                padding-bottom: 1rem !important;
+                padding-top: 0.75rem !important;
+                padding-bottom: 0.75rem !important;
             }
             .shadow-lg, .shadow-md, .shadow-sm {
                 box-shadow: none !important;
                 border: 1px solid #cbd5e1 !important;
             }
         }
-
-        /* Chế độ thuyết trình phóng to chữ & ẩn thanh điều hướng rườm rà */
-        body.presentation-mode {
-            font-size: 1.125rem;
-        }
-        body.presentation-mode .hide-in-presentation {
-            display: none !important;
-        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased selection:bg-blue-100 selection:text-blue-900">
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 antialiased transition-colors duration-200 selection:bg-blue-100 selection:text-blue-900">
 
-    <!-- Thanh điều hướng dính trên cùng -->
-    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm no-print">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- 1. THANH TIẾN ĐỘ ĐỌC TRANG & THANH ĐIỀU HƯỚNG NHANH -->
+    <div class="fixed top-0 left-0 right-0 h-1 bg-slate-200 dark:bg-slate-800 z-[60] no-print">
+        <div id="reading-progress" class="h-full bg-gradient-to-r from-blue-600 via-emerald-500 to-amber-500 w-0 transition-all duration-100"></div>
+    </div>
+
+    <header class="sticky top-1 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-wrap items-center justify-between h-16 gap-2">
-                <!-- Logo / Tên ngắn -->
+                <!-- Logo & Tên dự án -->
                 <a href="#tong-quan" class="flex items-center gap-2.5 group">
                     <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-emerald-500 flex items-center justify-center text-white font-bold shadow-sm group-hover:scale-105 transition">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,811 +130,775 @@
                         </svg>
                     </div>
                     <div>
-                        <span class="font-extrabold text-slate-900 tracking-tight text-sm sm:text-base block leading-tight">STEM LỚP 7</span>
-                        <span class="text-xs font-medium text-emerald-600 block">Tua-bin Gió Mini</span>
+                        <span class="font-extrabold text-slate-900 dark:text-white tracking-tight text-sm sm:text-base block leading-tight">STEM LỚP 7 • TUA-BIN GIÓ</span>
+                        <span id="header-team-subtitle" class="text-xs font-medium text-emerald-600 dark:text-emerald-400 block">Phương án 1: Khung gỗ CNC & V2 Pro</span>
                     </div>
                 </a>
 
                 <!-- Menu điều hướng nhanh -->
-                <nav class="hidden md:flex items-center space-x-1 text-sm font-medium text-slate-600 hide-in-presentation">
-                    <a href="#tong-quan" class="px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition">Tổng quan</a>
-                    <a href="#so-sanh" class="px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition">So sánh phương án</a>
-                    <a href="#lap-luan" class="px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition">Lập luận khoa học</a>
-                    <a href="#vat-tu" class="px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition">Danh mục BOM</a>
-                    <a href="#nhat-ky" class="px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition">Nhật ký dự án</a>
+                <nav class="hidden xl:flex items-center space-x-1 text-xs font-semibold text-slate-600 dark:text-slate-300 hide-in-presentation">
+                    <a href="#mo-phong" class="px-2.5 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-slate-800 hover:text-blue-700 transition">1. Mô phỏng</a>
+                    <a href="#ban-ve" class="px-2.5 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-slate-800 hover:text-blue-700 transition">2. Bản vẽ 2 PA</a>
+                    <a href="#cham-diem" class="px-2.5 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-slate-800 hover:text-blue-700 transition">3. Tiêu chí</a>
+                    <a href="#khoa-hoc" class="px-2.5 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-slate-800 hover:text-blue-700 transition">4. Khoa học & Tính toán</a>
+                    <a href="#vat-tu" class="px-2.5 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-slate-800 hover:text-blue-700 transition">5. BOM & Checklist</a>
+                    <a href="#nhat-ky" class="px-2.5 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-slate-800 hover:text-blue-700 transition">6. Nhật ký</a>
+                    <a href="#thuyet-trinh" class="px-2.5 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-slate-800 hover:text-blue-700 transition">7. Thuyết trình</a>
                 </nav>
 
-                <!-- Nút chức năng: Thuyết trình & In hồ sơ -->
-                <div class="flex items-center gap-2">
-                    <button id="btn-presentation" onclick="togglePresentationMode()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-                        </svg>
+                <!-- 2 & 3. Cụm công cụ: Sáng/Tối, Thuyết trình, Thông tin nhóm, In A4 -->
+                <div class="flex items-center gap-1.5 sm:gap-2">
+                    <button onclick="toggleTheme()" title="Chuyển giao diện Sáng / Tối" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-amber-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+                        <span id="theme-icon">🌙</span>
+                    </button>
+                    <button onclick="toggleTeamModal()" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 transition">
+                        <span>✏️</span>
+                        <span class="hidden sm:inline">Tên nhóm</span>
+                    </button>
+                    <button id="btn-presentation" onclick="togglePresentationMode()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 hover:bg-blue-100 border border-blue-200 dark:border-blue-800 transition">
+                        <span>📽️</span>
                         <span id="presentation-label">Thuyết trình</span>
                     </button>
-                    <button onclick="window.print()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                        </svg>
-                        <span>In hồ sơ</span>
+                    <button onclick="window.print()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm transition">
+                        <span>🖨️</span>
+                        <span>In A4</span>
                     </button>
                 </div>
-            </div>
-
-            <!-- Thanh điều hướng cuộn ngang trên mobile -->
-            <div class="flex md:hidden overflow-x-auto pb-2.5 gap-2 text-xs font-medium text-slate-600 hide-in-presentation">
-                <a href="#tong-quan" class="whitespace-nowrap px-3 py-1.5 rounded-full bg-slate-100 hover:bg-blue-100 text-slate-700">Tổng quan</a>
-                <a href="#so-sanh" class="whitespace-nowrap px-3 py-1.5 rounded-full bg-slate-100 hover:bg-blue-100 text-slate-700">So sánh (95đ vs 66đ)</a>
-                <a href="#lap-luan" class="whitespace-nowrap px-3 py-1.5 rounded-full bg-slate-100 hover:bg-blue-100 text-slate-700">Khoa học</a>
-                <a href="#vat-tu" class="whitespace-nowrap px-3 py-1.5 rounded-full bg-slate-100 hover:bg-blue-100 text-slate-700">Vật tư BOM</a>
-                <a href="#nhat-ky" class="whitespace-nowrap px-3 py-1.5 rounded-full bg-slate-100 hover:bg-blue-100 text-slate-700">Nhật ký GĐ 1-4</a>
             </div>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+    <!-- Hộp thoại chỉnh sửa thông tin Học sinh / Nhóm / Lớp / Trường (Chức năng 13) -->
+    <div id="team-modal" class="hidden fixed inset-0 z-[70] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 no-print">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-700 max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="font-extrabold text-lg text-slate-900 dark:text-white">Thông tin Tác giả / Nhóm Dự án</h3>
+                <button onclick="toggleTeamModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Thông tin này sẽ hiển thị trực tiếp trên trang bìa hồ sơ và bản in A4 nộp Ban giám khảo.</p>
+            <div class="space-y-3 text-sm">
+                <div>
+                    <label class="block font-semibold mb-1">Họ và tên học sinh / Tên nhóm:</label>
+                    <input id="input-student-name" type="text" placeholder="Ví dụ: Nhóm STEM 7A - Nguyễn Văn A" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold mb-1">Lớp:</label>
+                        <input id="input-student-class" type="text" placeholder="Ví dụ: 7A" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Trường THCS:</label>
+                        <input id="input-student-school" type="text" placeholder="Ví dụ: THCS ..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="toggleTeamModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Đóng</button>
+                <button onclick="saveTeamInfo()" class="px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white hover:bg-blue-700">Lưu vào hồ sơ</button>
+            </div>
+        </div>
+    </div>
 
-        <!-- 1. HERO SECTION & MÔ PHỎNG TƯƠNG TÁC SVG -->
-        <section id="tong-quan" class="bg-gradient-to-br from-white via-blue-50/60 to-emerald-50/60 rounded-3xl border border-slate-200/80 shadow-lg p-6 sm:p-8 lg:p-10">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                
-                <!-- Cột nội dung giới thiệu -->
-                <div class="lg:col-span-7 space-y-5">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-14">
+
+        <!-- TỔNG QUAN HỒ SƠ DỰ ÁN -->
+        <section id="tong-quan" class="bg-gradient-to-br from-white via-blue-50/70 to-emerald-50/70 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-lg p-6 sm:p-8 lg:p-10">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div class="space-y-4 max-w-3xl">
                     <div class="flex flex-wrap items-center gap-2">
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200">
-                            DỰ ÁN STEM KHỐI 7
-                        </span>
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                            Hoàn thành Giai đoạn 4 → Chuẩn bị Giai đoạn 5
-                        </span>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-300">HỒ SƠ DỰ ÁN STEM LỚP 7</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300">● Hoàn thành Giai đoạn 4 (Chuẩn bị Giai đoạn 5)</span>
                     </div>
-
-                    <h1 class="text-3xl sm:text-4xl lg:text-[2.6rem] font-extrabold text-slate-900 tracking-tight leading-tight">
-                        Mô hình <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-600">Tua-bin phát điện gió mini</span>
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
+                        Mô hình <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-500">Tua-bin phát điện gió mini</span>
                     </h1>
-
-                    <p class="text-slate-600 text-base sm:text-lg leading-relaxed">
-                        Nghiên cứu, thiết kế và chế tạo mô hình chuyển hóa động năng của luồng gió thành điện năng một chiều làm sáng đèn <strong>LED COB</strong>, tối ưu độ vững chắc, hiệu suất phát điện và tính thẩm mỹ kỹ thuật cho học sinh THCS.
+                    <p class="text-slate-600 dark:text-slate-300 text-base sm:text-lg leading-relaxed">
+                        Giải pháp tối ưu sử dụng <strong>khung tháp gỗ cắt Laser CNC</strong> kết hợp <strong>củ phát điện DC V2 Pro</strong> và <strong>cánh quạt 8 cánh 120mm</strong> thắp sáng <strong>đèn LED COB</strong> ổn định, an toàn và thẩm mỹ.
                     </p>
-
-                    <!-- Các thẻ thông số cốt lõi -->
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-2">
-                        <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm">
-                            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Giải pháp chốt</div>
-                            <div class="text-base font-bold text-blue-700 mt-1">Phương án 1 (95/100đ)</div>
-                            <div class="text-xs text-slate-500 mt-0.5">Khung gỗ CNC & V2 Pro</div>
-                        </div>
-                        <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm">
-                            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Hạn mức ngân sách</div>
-                            <div class="text-base font-bold text-emerald-700 mt-1">100.000 – 200.000đ</div>
-                            <div class="text-xs text-slate-500 mt-0.5">Dự trù: ~73k – 145k VNĐ</div>
-                        </div>
-                        <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm">
-                            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Tiến độ hiện tại</div>
-                            <div class="text-base font-bold text-amber-600 mt-1">Hết Giai đoạn 4</div>
-                            <div class="text-xs text-slate-500 mt-0.5">Sẵn sàng lắp ráp & Test</div>
-                        </div>
-                    </div>
-
-                    <!-- Mục tiêu cốt lõi -->
-                    <div class="bg-white/90 rounded-2xl p-4 border border-blue-100 flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 mt-0.5 font-bold text-sm">
-                            🎯
-                        </div>
-                        <div class="text-sm text-slate-700 leading-relaxed">
-                            <strong class="text-slate-900">Mục tiêu cốt lõi:</strong> Đảm bảo mô hình hoạt động ổn định trước quạt gió thực tế, đèn LED COB sáng rõ, dây dẫn đi ngầm gọn gàng an toàn, dễ vận chuyển trưng bày và đúng tiến độ 5 giai đoạn.
-                        </div>
+                    <!-- Thẻ thông tin tác giả tự động cập nhật -->
+                    <div id="cover-author-card" class="inline-flex flex-wrap items-center gap-x-4 gap-y-1 bg-white/90 dark:bg-slate-800/90 px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs sm:text-sm">
+                        <span><strong>Thực hiện:</strong> <span id="display-student-name" class="text-blue-700 dark:text-blue-400 font-semibold">Học sinh / Nhóm STEM Lớp 7</span></span>
+                        <span class="text-slate-300 dark:text-slate-600">|</span>
+                        <span><strong>Lớp:</strong> <span id="display-student-class" class="font-semibold">7A</span></span>
+                        <span class="text-slate-300 dark:text-slate-600">|</span>
+                        <span><strong>Trường:</strong> <span id="display-student-school" class="font-semibold">THCS (Nhấn "Tên nhóm" để sửa)</span></span>
                     </div>
                 </div>
 
-                <!-- Cột Mô phỏng tương tác SVG Tua-bin 8 cánh & Đèn LED COB -->
-                <div class="lg:col-span-5">
-                    <div class="bg-white rounded-3xl border border-slate-200 shadow-md p-5 flex flex-col items-center">
-                        <div class="w-full flex items-center justify-between mb-2">
-                            <span class="text-xs font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-1 rounded-lg">
-                                Mô phỏng nguyên lý hoạt động
-                            </span>
-                            <span id="sim-status-badge" class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700">
-                                Gió vừa • Đèn sáng ổn định
-                            </span>
-                        </div>
-
-                        <!-- Khung SVG Tua-bin Gỗ CNC 8 cánh & Đèn LED COB -->
-                        <div class="w-full max-w-[340px] aspect-[4/4.3] relative flex items-center justify-center my-1">
-                            <svg id="turbine-svg" viewBox="0 0 320 350" class="w-full h-full overflow-visible">
-                                <defs>
-                                    <!-- Hào quang phát sáng đèn LED COB -->
-                                    <radialGradient id="ledGlowGrad" cx="50%" cy="50%" r="50%">
-                                        <stop offset="0%" stop-color="#fef08a" stop-opacity="0.95" />
-                                        <stop offset="45%" stop-color="#facc15" stop-opacity="0.55" />
-                                        <stop offset="100%" stop-color="#eab308" stop-opacity="0" />
-                                    </radialGradient>
-                                    <!-- Màu gỗ CNC -->
-                                    <linearGradient id="woodGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                        <stop offset="0%" stop-color="#d9a066" />
-                                        <stop offset="50%" stop-color="#e6b88a" />
-                                        <stop offset="100%" stop-color="#c6894b" />
-                                    </linearGradient>
-                                    <!-- Màu cánh quạt nhựa PP xanh -->
-                                    <linearGradient id="bladeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" stop-color="#34d399" />
-                                        <stop offset="100%" stop-color="#059669" />
-                                    </linearGradient>
-                                </defs>
-
-                                <!-- Các luồng gió động -->
-                                <g id="wind-lines" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" fill="none">
-                                    <path class="wind-streak" style="animation-duration: 1.6s; animation-delay: 0s;" d="M 15 65 Q 45 60 75 65" />
-                                    <path class="wind-streak" style="animation-duration: 1.4s; animation-delay: 0.4s;" d="M 10 105 Q 40 110 70 105" />
-                                    <path class="wind-streak" style="animation-duration: 1.8s; animation-delay: 0.8s;" d="M 20 145 Q 50 140 80 145" />
-                                </g>
-
-                                <!-- Đế gỗ vuông bản rộng (Hạ thấp trọng tâm) -->
-                                <rect x="55" y="302" width="210" height="16" rx="4" fill="#b4783e" stroke="#784b21" stroke-width="1.5" />
-                                <rect x="65" y="294" width="190" height="10" rx="3" fill="url(#woodGrad)" stroke="#784b21" stroke-width="1.5" />
-
-                                <!-- Khung tháp gỗ CNC 4 chân có thanh giằng -->
-                                <!-- Chân tháp trái & phải -->
-                                <polygon points="105,294 138,125 147,125 117,294" fill="url(#woodGrad)" stroke="#784b21" stroke-width="1.4" />
-                                <polygon points="215,294 182,125 173,125 203,294" fill="url(#woodGrad)" stroke="#784b21" stroke-width="1.4" />
-                                <!-- Chân tháp phụ phía sau tạo chiều sâu 3D -->
-                                <line x1="128" y1="294" x2="150" y2="125" stroke="#9c622c" stroke-width="4" />
-                                <line x1="192" y1="294" x2="170" y2="125" stroke="#9c622c" stroke-width="4" />
-
-                                <!-- Thanh giằng ngang & chéo gia cố -->
-                                <rect x="131" y="165" width="58" height="7" rx="2" fill="url(#woodGrad)" stroke="#784b21" stroke-width="1.2" />
-                                <rect x="120" y="225" width="80" height="8" rx="2" fill="url(#woodGrad)" stroke="#784b21" stroke-width="1.2" />
-                                <line x1="142" y1="130" x2="180" y2="165" stroke="#8c5624" stroke-width="3" />
-                                <line x1="178" y1="130" x2="140" y2="165" stroke="#8c5624" stroke-width="3" />
-                                <line x1="134" y1="172" x2="192" y2="225" stroke="#8c5624" stroke-width="3" />
-                                <line x1="186" y1="172" x2="128" y2="225" stroke="#8c5624" stroke-width="3" />
-                                <line x1="123" y1="233" x2="203" y2="294" stroke="#8c5624" stroke-width="3" />
-                                <line x1="197" y1="233" x2="117" y2="294" stroke="#8c5624" stroke-width="3" />
-
-                                <!-- Dây dẫn điện đi ngầm dọc thân tháp xuống LED COB -->
-                                <path d="M 160 122 L 160 278 L 222 278 L 222 288" fill="none" stroke="#ef4444" stroke-width="2.2" stroke-dasharray="4 2" />
-                                <path d="M 163 122 L 163 282 L 228 282 L 228 288" fill="none" stroke="#1e293b" stroke-width="2.2" />
-
-                                <!-- Bệ đỡ đỉnh tháp -->
-                                <rect x="132" y="116" width="56" height="10" rx="2" fill="url(#woodGrad)" stroke="#784b21" stroke-width="1.5" />
-
-                                <!-- Củ phát điện DC V2 Pro (Nam châm vĩnh cửu) -->
-                                <rect x="142" y="92" width="46" height="24" rx="5" fill="#475569" stroke="#1e293b" stroke-width="1.5" />
-                                <rect x="176" y="95" width="14" height="18" rx="2" fill="#94a3b8" stroke="#1e293b" stroke-width="1.2" />
-                                <text x="160" y="107" font-size="7" font-weight="bold" fill="#ffffff" text-anchor="middle">V2 PRO</text>
-
-                                <!-- Trục quay 2mm -->
-                                <rect x="132" y="102" width="12" height="4" fill="#cbd5e1" stroke="#334155" stroke-width="1" />
-
-                                <!-- Cụm Đèn LED COB trên mặt đế -->
-                                <g transform="translate(225, 286)">
-                                    <!-- Vùng phát sáng thay đổi theo tốc độ gió -->
-                                    <circle id="led-halo" cx="0" cy="-4" r="34" fill="url(#ledGlowGrad)" opacity="0.65" />
-                                    <!-- Đế mạch LED -->
-                                    <rect x="-14" y="0" width="28" height="8" rx="2" fill="#334155" />
-                                    <!-- Chip LED COB phát sáng -->
-                                    <rect id="led-chip" x="-9" y="-4" width="18" height="5" rx="1.5" fill="#fde047" stroke="#ca8a04" stroke-width="1" />
-                                    <text x="0" y="24" font-size="9" font-weight="700" fill="#0f172a" text-anchor="middle">LED COB</text>
-                                </g>
-
-                                <!-- Chú thích trên hình -->
-                                <text x="242" y="185" font-size="9.5" font-weight="600" fill="#784b21">Khung gỗ CNC</text>
-                                <line x1="200" y1="182" x2="238" y2="182" stroke="#784b21" stroke-width="1" />
-
-                                <!-- Cụm cánh quạt 8 cánh 120mm (Tâm quay tại 134, 104) -->
-                                <g id="rotor-hub" transform="translate(134, 104)">
-                                    <g id="rotor-blades">
-                                        <!-- 8 cánh phân bố đều mỗi 45 độ -->
-                                        <g transform="rotate(0)">
-                                            <path d="M 0,-4 L 6,-62 C 12,-66 16,-58 12,-46 L 4,-4 Z" fill="url(#bladeGrad)" stroke="#065f46" stroke-width="1.2" />
-                                        </g>
-                                        <g transform="rotate(45)">
-                                            <path d="M 0,-4 L 6,-62 C 12,-66 16,-58 12,-46 L 4,-4 Z" fill="url(#bladeGrad)" stroke="#065f46" stroke-width="1.2" />
-                                        </g>
-                                        <g transform="rotate(90)">
-                                            <path d="M 0,-4 L 6,-62 C 12,-66 16,-58 12,-46 L 4,-4 Z" fill="url(#bladeGrad)" stroke="#065f46" stroke-width="1.2" />
-                                        </g>
-                                        <g transform="rotate(135)">
-                                            <path d="M 0,-4 L 6,-62 C 12,-66 16,-58 12,-46 L 4,-4 Z" fill="url(#bladeGrad)" stroke="#065f46" stroke-width="1.2" />
-                                        </g>
-                                        <g transform="rotate(180)">
-                                            <path d="M 0,-4 L 6,-62 C 12,-66 16,-58 12,-46 L 4,-4 Z" fill="url(#bladeGrad)" stroke="#065f46" stroke-width="1.2" />
-                                        </g>
-                                        <g transform="rotate(225)">
-                                            <path d="M 0,-4 L 6,-62 C 12,-66 16,-58 12,-46 L 4,-4 Z" fill="url(#bladeGrad)" stroke="#065f46" stroke-width="1.2" />
-                                        </g>
-                                        <g transform="rotate(270)">
-                                            <path d="M 0,-4 L 6,-62 C 12,-66 16,-58 12,-46 L 4,-4 Z" fill="url(#bladeGrad)" stroke="#065f46" stroke-width="1.2" />
-                                        </g>
-                                        <g transform="rotate(315)">
-                                            <path d="M 0,-4 L 6,-62 C 12,-66 16,-58 12,-46 L 4,-4 Z" fill="url(#bladeGrad)" stroke="#065f46" stroke-width="1.2" />
-                                        </g>
-                                        <!-- Chóp trục 8 cánh -->
-                                        <circle cx="0" cy="0" r="10" fill="#1e293b" stroke="#0f172a" stroke-width="1.5" />
-                                        <circle cx="0" cy="0" r="4" fill="#94a3b8" />
-                                    </g>
-                                </g>
-                            </svg>
-                        </div>
-
-                        <!-- Thanh điều khiển tốc độ gió tương tác -->
-                        <div class="w-full bg-slate-50 rounded-2xl p-3.5 border border-slate-200 space-y-2 no-print">
-                            <div class="flex items-center justify-between text-xs sm:text-sm">
-                                <label for="wind-slider" class="font-bold text-slate-700 flex items-center gap-1.5">
-                                    <span>💨</span> Kéo chỉnh tốc độ gió:
-                                </label>
-                                <span id="wind-value-text" class="font-extrabold text-blue-600">55% (Gió vừa)</span>
-                            </div>
-                            <input id="wind-slider" type="range" min="0" max="100" value="55" class="w-full">
-                            <div class="grid grid-cols-2 gap-2 pt-1 text-xs">
-                                <div class="bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 flex justify-between">
-                                    <span class="text-slate-500">Điện áp ước tính:</span>
-                                    <span id="voltage-readout" class="font-bold text-slate-800">~3.4 V</span>
-                                </div>
-                                <div class="bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 flex justify-between">
-                                    <span class="text-slate-500">Độ sáng LED COB:</span>
-                                    <span id="brightness-readout" class="font-bold text-amber-600">Sáng rõ</span>
-                                </div>
-                            </div>
-                        </div>
+                <!-- 4 Thẻ chỉ số nhanh -->
+                <div class="grid grid-cols-2 gap-3.5 shrink-0 lg:w-80">
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <div class="text-xs font-semibold text-slate-500 dark:text-slate-400">Điểm đánh giá PA1</div>
+                        <div class="text-2xl font-extrabold text-emerald-600 mt-1">95 / 100đ</div>
+                        <div class="text-[11px] text-slate-500 mt-0.5">Hơn PA2 (+29 điểm)</div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <div class="text-xs font-semibold text-slate-500 dark:text-slate-400">Ngân sách cho phép</div>
+                        <div class="text-xl font-extrabold text-blue-600 mt-1">100k – 200k</div>
+                        <div class="text-[11px] text-slate-500 mt-0.5">Dự trù: ~73k – 145k</div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <div class="text-xs font-semibold text-slate-500 dark:text-slate-400">Khớp trục kỹ thuật</div>
+                        <div class="text-xl font-extrabold text-slate-800 dark:text-white mt-1">Ø 2.0 mm</div>
+                        <div class="text-[11px] text-slate-500 mt-0.5">Trục V2 Pro & Cánh 120mm</div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <div class="text-xs font-semibold text-slate-500 dark:text-slate-400">Tiến độ dự án</div>
+                        <div class="text-xl font-extrabold text-amber-600 mt-1">GĐ 4 / 5</div>
+                        <div class="text-[11px] text-slate-500 mt-0.5">Sẵn sàng lắp ráp & Test</div>
                     </div>
                 </div>
-
             </div>
         </section>
 
-        <!-- 2. SO SÁNH 2 PHƯƠNG ÁN & BẢNG ĐÁNH GIÁ 5 TIÊU CHÍ -->
-        <section id="so-sanh" class="space-y-6">
+        <!-- 4. BỘ MÔ PHỎNG TUA-BIN GIÓ SVG 2D TƯƠNG TÁC NÂNG CAO & BIỂU ĐỒ LIVE -->
+        <section id="mo-phong" class="space-y-6">
             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
                 <div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Giai đoạn 1 – 3 • Phân tích kỹ thuật</span>
-                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">So sánh 2 Phương án & Bảng Đánh Giá 5 Tiêu Chí</h2>
+                    <span class="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">Phòng thí nghiệm ảo STEM</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">1. Mô Phỏng Tua-bin Gió Tương Tác & Đồ Thị Điện Áp</h2>
                 </div>
-                <p class="text-sm text-slate-500">Thang điểm đánh giá định lượng: 100 điểm</p>
+                <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">Thử thay đổi tốc độ gió, số cánh quạt, đảo cực LED & chế độ X-Ray</span>
             </div>
 
-            <!-- 2 Thẻ so sánh trực quan -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Cột trái: Mô hình SVG 2D -->
+                <div class="lg:col-span-5 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-md p-5 flex flex-col items-center justify-between">
+                    <div class="w-full flex items-center justify-between gap-2 mb-2">
+                        <span id="sim-badge" class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">
+                            Gió vừa • LED COB sáng rõ
+                        </span>
+                        <button id="btn-xray" onclick="toggleXray()" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:bg-blue-50 transition no-print">
+                            🔍 X-Ray dây ngầm: TẮT
+                        </button>
+                    </div>
+
+                    <!-- SVG Tua-bin -->
+                    <div class="w-full max-w-[340px] aspect-[4/4.2] relative flex items-center justify-center">
+                        <svg id="turbine-svg" viewBox="0 0 320 345" class="w-full h-full overflow-visible">
+                            <defs>
+                                <radialGradient id="ledGlowGrad" cx="50%" cy="50%" r="50%">
+                                    <stop offset="0%" stop-color="#fef08a" stop-opacity="0.98" />
+                                    <stop offset="45%" stop-color="#facc15" stop-opacity="0.6" />
+                                    <stop offset="100%" stop-color="#eab308" stop-opacity="0" />
+                                </radialGradient>
+                                <linearGradient id="woodGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#d9a066" />
+                                    <stop offset="50%" stop-color="#e6b88a" />
+                                    <stop offset="100%" stop-color="#c6894b" />
+                                </linearGradient>
+                                <linearGradient id="bladeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#34d399" />
+                                    <stop offset="100%" stop-color="#059669" />
+                                </linearGradient>
+                            </defs>
+
+                            <!-- Vệt gió -->
+                            <g id="wind-lines" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" fill="none">
+                                <path class="wind-streak" style="animation-duration: 1.5s; animation-delay: 0s;" d="M 10 60 Q 45 55 75 60" />
+                                <path class="wind-streak" style="animation-duration: 1.3s; animation-delay: 0.35s;" d="M 5 102 Q 40 107 70 102" />
+                                <path class="wind-streak" style="animation-duration: 1.7s; animation-delay: 0.7s;" d="M 15 144 Q 50 139 80 144" />
+                            </g>
+
+                            <!-- Đế gỗ vuông bản rộng -->
+                            <g id="wood-structure" class="transition-opacity duration-300">
+                                <rect x="52" y="300" width="216" height="16" rx="4" fill="#b4783e" stroke="#784b21" stroke-width="1.5" />
+                                <rect x="62" y="292" width="196" height="10" rx="3" fill="url(#woodGrad)" stroke="#784b21" stroke-width="1.5" />
+
+                                <!-- Khung tháp 4 chân + giằng chéo -->
+                                <polygon points="104,292 138,124 147,124 116,292" fill="url(#woodGrad)" stroke="#784b21" stroke-width="1.4" />
+                                <polygon points="216,292 182,124 173,124 204,292" fill="url(#woodGrad)" stroke="#784b21" stroke-width="1.4" />
+                                <line x1="126" y1="292" x2="150" y2="124" stroke="#9c622c" stroke-width="3.5" />
+                                <line x1="194" y1="292" x2="170" y2="124" stroke="#9c622c" stroke-width="3.5" />
+
+                                <rect x="131" y="164" width="58" height="7" rx="2" fill="url(#woodGrad)" stroke="#784b21" stroke-width="1.2" />
+                                <rect x="120" y="224" width="80" height="8" rx="2" fill="url(#woodGrad)" stroke="#784b21" stroke-width="1.2" />
+                                <line x1="142" y1="128" x2="180" y2="164" stroke="#8c5624" stroke-width="2.8" />
+                                <line x1="178" y1="128" x2="140" y2="164" stroke="#8c5624" stroke-width="2.8" />
+                                <line x1="134" y1="171" x2="192" y2="224" stroke="#8c5624" stroke-width="2.8" />
+                                <line x1="186" y1="171" x2="128" y2="224" stroke="#8c5624" stroke-width="2.8" />
+                                <line x1="123" y1="232" x2="204" y2="292" stroke="#8c5624" stroke-width="2.8" />
+                                <line x1="197" y1="232" x2="116" y2="292" stroke="#8c5624" stroke-width="2.8" />
+                                <rect x="132" y="115" width="56" height="10" rx="2" fill="url(#woodGrad)" stroke="#784b21" stroke-width="1.5" />
+                            </g>
+
+                            <!-- Dây dẫn điện đi ngầm dọc thân tháp (sáng rực khi bật X-Ray) -->
+                            <g id="hidden-wires">
+                                <path id="wire-pos" d="M 158 118 L 158 278 L 222 278 L 222 286" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-dasharray="4 2" />
+                                <path id="wire-neg" d="M 164 118 L 164 283 L 228 283 L 228 286" fill="none" stroke="#3b82f6" stroke-width="2.5" />
+                                <text id="xray-label" x="160" y="205" font-size="10" font-weight="800" fill="#ef4444" text-anchor="middle" opacity="0">Dây đồng đi ngầm (+/-)</text>
+                            </g>
+
+                            <!-- Củ phát điện DC V2 Pro -->
+                            <rect x="142" y="90" width="46" height="25" rx="5" fill="#475569" stroke="#1e293b" stroke-width="1.5" />
+                            <rect x="176" y="93" width="14" height="19" rx="2" fill="#94a3b8" stroke="#1e293b" stroke-width="1.2" />
+                            <text x="160" y="106" font-size="7" font-weight="bold" fill="#ffffff" text-anchor="middle">V2 PRO</text>
+
+                            <!-- Trục quay 2mm -->
+                            <rect x="131" y="100" width="12" height="4" fill="#cbd5e1" stroke="#334155" stroke-width="1" />
+
+                            <!-- Đèn LED COB trên đế -->
+                            <g transform="translate(225, 284)">
+                                <circle id="led-halo" cx="0" cy="-4" r="34" fill="url(#ledGlowGrad)" opacity="0.7" />
+                                <rect x="-15" y="0" width="30" height="8" rx="2" fill="#334155" />
+                                <rect id="led-chip" x="-10" y="-4" width="20" height="5" rx="1.5" fill="#ffffff" stroke="#ca8a04" stroke-width="1" />
+                                <text id="led-polarity-label" x="0" y="23" font-size="8.5" font-weight="800" fill="#059669" text-anchor="middle">LED COB (+ / -)</text>
+                            </g>
+
+                            <!-- Cụm cánh quạt xoay (Vẽ động theo số cánh 3 / 5 / 8) -->
+                            <g id="rotor-hub" transform="translate(133, 102)">
+                                <g id="rotor-blades"></g>
+                                <circle cx="0" cy="0" r="10" fill="#1e293b" stroke="#0f172a" stroke-width="1.5" />
+                                <circle cx="0" cy="0" r="4" fill="#94a3b8" />
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- Cảnh báo đảo cực LED -->
+                    <div id="polarity-warning" class="hidden w-full bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold px-3.5 py-2 rounded-xl mt-2">
+                        ⚠️ <strong>Đang nối ngược cực (+/-):</strong> Đèn LED COB là linh kiện bán dẫn chỉ cho dòng điện đi qua một chiều nên không sáng! Hãy bấm "Đảo cực LED" về đúng chiều.
+                    </div>
+                </div>
+
+                <!-- Cột phải: Bảng điều khiển, Đồng hồ đo & Biểu đồ thời gian thực -->
+                <div class="lg:col-span-7 flex flex-col justify-between gap-5">
+                    <!-- Bảng điều khiển tương tác -->
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 sm:p-6 space-y-5 no-print">
+                        <!-- Thanh trượt tốc độ gió (0 - 15 m/s) + 4 nút mức gió nhanh -->
+                        <div class="space-y-2.5">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <label for="wind-slider" class="text-sm font-bold text-slate-800 dark:text-slate-200">
+                                    💨 Tốc độ luồng gió: <span id="wind-speed-ms" class="text-blue-600 dark:text-blue-400 font-extrabold">8.0 m/s</span>
+                                </label>
+                                <div class="flex flex-wrap gap-1.5">
+                                    <button onclick="setWindPreset(0)" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-blue-100 text-slate-700 dark:text-slate-300">Tắt (0 m/s)</button>
+                                    <button onclick="setWindPreset(3.5)" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 dark:bg-blue-950 hover:bg-blue-100 text-blue-700 dark:text-blue-300">Gió nhẹ (3.5)</button>
+                                    <button onclick="setWindPreset(8.0)" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-50 dark:bg-emerald-950 hover:bg-emerald-100 text-emerald-700 dark:text-emerald-300">Gió vừa (8.0)</button>
+                                    <button onclick="setWindPreset(13.5)" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-50 dark:bg-amber-950 hover:bg-amber-100 text-amber-700 dark:text-amber-300">Gió mạnh (13.5)</button>
+                                </div>
+                            </div>
+                            <input id="wind-slider" type="range" min="0" max="15" step="0.5" value="8.0" class="w-full">
+                        </div>
+
+                        <!-- Chọn số lượng cánh quạt & Đảo cực LED -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100 dark:border-slate-800">
+                            <div>
+                                <div class="text-xs font-bold text-slate-600 dark:text-slate-400 mb-2">Số lượng cánh quạt (Ø 120mm):</div>
+                                <div class="grid grid-cols-3 gap-1.5" id="blade-selector">
+                                    <button onclick="setBladeCount(3)" data-blades="3" class="blade-btn py-1.5 px-2 rounded-xl text-xs font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">3 cánh</button>
+                                    <button onclick="setBladeCount(5)" data-blades="5" class="blade-btn py-1.5 px-2 rounded-xl text-xs font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">5 cánh</button>
+                                    <button onclick="setBladeCount(8)" data-blades="8" class="blade-btn py-1.5 px-2 rounded-xl text-xs font-extrabold border-2 border-emerald-500 bg-emerald-50 text-emerald-800">8 cánh ★</button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="text-xs font-bold text-slate-600 dark:text-slate-400 mb-2">Kiểm tra phân cực mạch điện:</div>
+                                <button id="btn-polarity" onclick="togglePolarity()" class="w-full py-1.5 px-3 rounded-xl text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700 transition flex items-center justify-center gap-1.5">
+                                    <span>🔌</span> Cực LED: Đúng chiều (+/-)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4 Đồng hồ đo thông số thời gian thực -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-3.5 text-center shadow-sm">
+                            <div class="text-[11px] font-bold uppercase text-slate-500">Điện áp (U)</div>
+                            <div id="meter-voltage" class="text-xl sm:text-2xl font-extrabold text-blue-600 mt-1">3.6 V</div>
+                            <div class="text-[11px] text-slate-400">DC V2 Pro</div>
+                        </div>
+                        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-3.5 text-center shadow-sm">
+                            <div class="text-[11px] font-bold uppercase text-slate-500">Dòng điện (I)</div>
+                            <div id="meter-current" class="text-xl sm:text-2xl font-extrabold text-emerald-600 mt-1">115 mA</div>
+                            <div class="text-[11px] text-slate-400">Tải LED COB</div>
+                        </div>
+                        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-3.5 text-center shadow-sm">
+                            <div class="text-[11px] font-bold uppercase text-slate-500">Công suất (P)</div>
+                            <div id="meter-power" class="text-xl sm:text-2xl font-extrabold text-amber-600 mt-1">414 mW</div>
+                            <div class="text-[11px] text-slate-400">P = U × I</div>
+                        </div>
+                        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-3.5 text-center shadow-sm">
+                            <div class="text-[11px] font-bold uppercase text-slate-500">Vòng quay</div>
+                            <div id="meter-rpm" class="text-xl sm:text-2xl font-extrabold text-purple-600 mt-1">640</div>
+                            <div class="text-[11px] text-slate-400">vòng/phút (RPM)</div>
+                        </div>
+                    </div>
+
+                    <!-- Biểu đồ đường thời gian thực (Canvas Live Chart) -->
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-slate-700 dark:text-slate-300">📈 Đồ thị Điện áp (V) & Công suất (mW) theo thời gian thực</span>
+                            <div class="flex items-center gap-3 text-[11px] font-semibold">
+                                <span class="flex items-center gap-1 text-blue-600"><span class="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block"></span>Điện áp (V)</span>
+                                <span class="flex items-center gap-1 text-amber-500"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>Công suất (×100mW)</span>
+                            </div>
+                        </div>
+                        <div class="w-full h-36 relative">
+                            <canvas id="live-chart" class="w-full h-full block rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. BẢN VẼ PHÁC THẢO KỸ THUẬT TƯƠNG TÁC (2 PHƯƠNG ÁN ĐỐI CHIẾU) -->
+        <section id="ban-ve" class="space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">Giai đoạn 2 • Hồ sơ thiết kế kỹ thuật</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">2. Bản Vẽ Phác Thảo Kỹ Thuật Đối Chiếu 2 Phương Án</h2>
+                </div>
+                <button id="btn-toggle-labels" onclick="toggleBlueprintLabels()" class="self-start sm:self-auto px-3.5 py-2 rounded-xl text-xs font-bold bg-blue-50 dark:bg-slate-800 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-slate-700 hover:bg-blue-100 transition no-print">
+                    🏷️ Bật / Tắt chú thích bộ phận
+                </button>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Thẻ Phương án 1 (Được chọn) -->
-                <div class="relative bg-white rounded-3xl border-2 border-emerald-500 shadow-md p-6 flex flex-col justify-between">
-                    <div class="absolute -top-3.5 right-6 bg-emerald-600 text-white text-xs font-extrabold px-3.5 py-1 rounded-full shadow-sm tracking-wide">
-                        ✓ ĐƯỢC CHỌN (95 / 100 ĐIỂM)
+                <!-- Bản vẽ Phương án 1 -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl border-2 border-emerald-500 shadow-sm p-5 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="font-extrabold text-emerald-700 dark:text-emerald-400 text-base">PHƯƠNG ÁN 1 (CHỌN): Khung gỗ CNC & V2 Pro</span>
+                        <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">95/100đ</span>
                     </div>
-                    <div>
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-extrabold text-lg">
-                                PA1
-                            </div>
-                            <div>
-                                <h3 class="text-lg sm:text-xl font-bold text-slate-900">Khung gỗ CNC & Củ phát V2 Pro</h3>
-                                <p class="text-xs font-medium text-emerald-700">Cánh 8 cánh 120mm • Đi dây ngầm • Đèn LED COB</p>
-                            </div>
-                        </div>
+                    <!-- Nền giấy ô ly kỹ thuật -->
+                    <div class="rounded-2xl border border-slate-300 bg-[#fdfdfd] p-3 overflow-hidden">
+                        <svg viewBox="0 0 380 250" class="w-full h-auto">
+                            <defs>
+                                <pattern id="gridPattern1" width="15" height="15" patternUnits="userSpaceOnUse">
+                                    <path d="M 15 0 L 0 0 0 15" fill="none" stroke="#dbeafe" stroke-width="0.8"/>
+                                </pattern>
+                            </defs>
+                            <rect width="380" height="250" fill="url(#gridPattern1)" />
+                            <!-- Hình vẽ kỹ thuật PA1 -->
+                            <rect x="45" y="210" width="150" height="12" fill="#e2e8f0" stroke="#1e293b" stroke-width="1.5"/>
+                            <polygon points="75,210 105,80 113,80 86,210" fill="#fef3c7" stroke="#1e293b" stroke-width="1.4"/>
+                            <polygon points="165,210 135,80 127,80 154,210" fill="#fef3c7" stroke="#1e293b" stroke-width="1.4"/>
+                            <line x1="96" y1="125" x2="144" y2="125" stroke="#1e293b" stroke-width="2"/>
+                            <line x1="88" y1="168" x2="152" y2="168" stroke="#1e293b" stroke-width="2"/>
+                            <line x1="120" y1="80" x2="120" y2="205" stroke="#ef4444" stroke-width="1.8" stroke-dasharray="3 2"/>
+                            <line x1="120" y1="205" x2="170" y2="205" stroke="#ef4444" stroke-width="1.8" stroke-dasharray="3 2"/>
+                            <!-- Củ phát V2 Pro -->
+                            <rect x="102" y="58" width="38" height="20" rx="3" fill="#94a3b8" stroke="#1e293b" stroke-width="1.5"/>
+                            <!-- Cánh 8 cánh -->
+                            <circle cx="96" cy="68" r="42" fill="none" stroke="#10b981" stroke-width="1.2" stroke-dasharray="4 3"/>
+                            <line x1="96" y1="26" x2="96" y2="110" stroke="#059669" stroke-width="3"/>
+                            <line x1="54" y1="68" x2="138" y2="68" stroke="#059669" stroke-width="3"/>
+                            <line x1="66" y1="38" x2="126" y2="98" stroke="#059669" stroke-width="2.5"/>
+                            <line x1="126" y1="38" x2="66" y2="98" stroke="#059669" stroke-width="2.5"/>
+                            <circle cx="96" cy="68" r="6" fill="#1e293b"/>
+                            <!-- LED COB -->
+                            <rect x="162" y="201" width="18" height="8" fill="#facc15" stroke="#1e293b" stroke-width="1.2"/>
 
-                        <ul class="space-y-2.5 text-sm text-slate-700">
-                            <li class="flex items-start gap-2">
-                                <span class="text-emerald-600 font-bold mt-0.5">●</span>
-                                <span><strong>Kết cấu:</strong> Khung tháp gỗ ép cắt Laser CNC 4 chân có thanh giằng + đế vuông bản rộng hạ thấp trọng tâm.</span>
-                            </li>
-                            <li class="flex items-start gap-2">
-                                <span class="text-emerald-600 font-bold mt-0.5">●</span>
-                                <span><strong>Bộ phát điện:</strong> Củ phát DC nam châm vĩnh cửu V2 Pro (trục 2mm) kết hợp cánh nhựa PP 8 cánh đường kính 120mm.</span>
-                            </li>
-                            <li class="flex items-start gap-2">
-                                <span class="text-emerald-600 font-bold mt-0.5">●</span>
-                                <span><strong>Mạch & Tải:</strong> Dây đồng mềm đi ngầm dọc thân tháp nối xuống module đèn LED COB (3V–5V) sáng rõ.</span>
-                            </li>
-                        </ul>
-                    </div>
+                            <!-- Chú thích mũi tên -->
+                            <g class="blueprint-labels" font-size="10.5" font-weight="700" fill="#0f172a">
+                                <line x1="138" y1="45" x2="195" y2="32" stroke="#334155" stroke-width="1"/>
+                                <text x="198" y="35">Cánh 8 cánh Ø 120mm</text>
 
-                    <div class="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between text-xs sm:text-sm">
-                        <span class="text-slate-500 font-medium">Chi phí linh kiện: <strong class="text-slate-800">~73.000 – 145.000đ</strong></span>
-                        <span class="font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg">Tối ưu thi đấu</span>
+                                <line x1="140" y1="68" x2="195" y2="68" stroke="#334155" stroke-width="1"/>
+                                <text x="198" y="71">Củ phát V2 Pro (trục 2mm)</text>
+
+                                <line x1="146" y1="125" x2="195" y2="112" stroke="#334155" stroke-width="1"/>
+                                <text x="198" y="115">Tháp gỗ cắt CNC 4 chân</text>
+
+                                <line x1="122" y1="150" x2="195" y2="150" stroke="#ef4444" stroke-width="1"/>
+                                <text x="198" y="153" fill="#dc2626">Dây đồng đi ngầm</text>
+
+                                <line x1="180" y1="205" x2="215" y2="188" stroke="#334155" stroke-width="1"/>
+                                <text x="218" y="191">Đèn LED COB (3V-5V)</text>
+
+                                <line x1="185" y1="218" x2="215" y2="225" stroke="#334155" stroke-width="1"/>
+                                <text x="218" y="228">Đế gỗ vuông bản rộng</text>
+                            </g>
+                        </svg>
                     </div>
                 </div>
 
-                <!-- Thẻ Phương án 2 (Loại) -->
-                <div class="relative bg-white rounded-3xl border border-slate-200 shadow-sm p-6 flex flex-col justify-between opacity-95">
-                    <div class="absolute -top-3.5 right-6 bg-slate-500 text-white text-xs font-bold px-3.5 py-1 rounded-full">
-                        PHƯƠNG ÁN ĐỐI CHIẾU (66 / 100 ĐIỂM)
+                <!-- Bản vẽ Phương án 2 -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-slate-700 dark:text-slate-300 text-base">PHƯƠNG ÁN 2 (LOẠI): Tái chế & Motor DC mini</span>
+                        <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600">66/100đ</span>
                     </div>
-                    <div>
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-11 h-11 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center font-extrabold text-lg">
-                                PA2
-                            </div>
-                            <div>
-                                <h3 class="text-lg sm:text-xl font-bold text-slate-800">Tái chế & Motor DC mini</h3>
-                                <p class="text-xs font-medium text-slate-500">Ống hút/bìa carton • Cánh tự chế • Dây đi ngoài</p>
-                            </div>
-                        </div>
+                    <div class="rounded-2xl border border-slate-300 bg-[#fdfdfd] p-3 overflow-hidden">
+                        <svg viewBox="0 0 380 250" class="w-full h-auto">
+                            <defs>
+                                <pattern id="gridPattern2" width="15" height="15" patternUnits="userSpaceOnUse">
+                                    <path d="M 15 0 L 0 0 0 15" fill="none" stroke="#dbeafe" stroke-width="0.8"/>
+                                </pattern>
+                            </defs>
+                            <rect width="380" height="250" fill="url(#gridPattern2)" />
+                            <!-- Hình vẽ kỹ thuật PA2 -->
+                            <rect x="55" y="206" width="130" height="16" fill="#d6c7b2" stroke="#1e293b" stroke-width="1.4"/>
+                            <line x1="60" y1="214" x2="180" y2="214" stroke="#78716c" stroke-width="1" stroke-dasharray="4 2"/>
+                            <!-- Tháp ống hút / ống nhựa -->
+                            <rect x="112" y="82" width="16" height="124" fill="#e0f2fe" stroke="#1e293b" stroke-width="1.4"/>
+                            <!-- Dây đi ngoài lòng thòng -->
+                            <path d="M 128 75 Q 152 135 135 175 T 165 202" fill="none" stroke="#dc2626" stroke-width="1.5"/>
+                            <!-- Motor DC mini -->
+                            <rect x="104" y="60" width="32" height="22" rx="4" fill="#cbd5e1" stroke="#1e293b" stroke-width="1.4"/>
+                            <!-- Cánh cắt chai nhựa -->
+                            <ellipse cx="95" cy="46" rx="7" ry="22" fill="#bae6fd" stroke="#0284c7" stroke-width="1.3"/>
+                            <ellipse cx="95" cy="90" rx="7" ry="22" fill="#bae6fd" stroke="#0284c7" stroke-width="1.3"/>
+                            <ellipse cx="73" cy="68" rx="22" ry="7" fill="#bae6fd" stroke="#0284c7" stroke-width="1.3"/>
+                            <circle cx="95" cy="68" r="5" fill="#475569"/>
+                            <!-- Bóng LED đơn -->
+                            <circle cx="165" cy="199" r="5" fill="#fef08a" stroke="#1e293b" stroke-width="1.2"/>
 
-                        <ul class="space-y-2.5 text-sm text-slate-600">
-                            <li class="flex items-start gap-2">
-                                <span class="text-slate-400 font-bold mt-0.5">●</span>
-                                <span><strong>Kết cấu:</strong> Tháp ghép từ ống hút hoặc ống nhựa tái chế, chân đế làm bằng bìa carton ép nhiều lớp nhẹ.</span>
-                            </li>
-                            <li class="flex items-start gap-2">
-                                <span class="text-slate-400 font-bold mt-0.5">●</span>
-                                <span><strong>Bộ phát điện:</strong> Tận dụng motor DC mini cũ kết hợp cánh quạt tự cắt từ vỏ chai nhựa thủ công.</span>
-                            </li>
-                            <li class="flex items-start gap-2">
-                                <span class="text-slate-400 font-bold mt-0.5">●</span>
-                                <span><strong>Hạn chế thực tế:</strong> Dễ rung lắc/nghiêng khi gió mạnh, cánh dễ lệch tâm, điện áp yếu ở gió nhẹ và dây dễ tuột mối nối.</span>
-                            </li>
-                        </ul>
-                    </div>
+                            <!-- Chú thích mũi tên -->
+                            <g class="blueprint-labels" font-size="10.5" font-weight="700" fill="#334155">
+                                <line x1="102" y1="42" x2="195" y2="32" stroke="#475569" stroke-width="1"/>
+                                <text x="198" y="35">Cánh cắt từ vỏ chai nhựa</text>
 
-                    <div class="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between text-xs sm:text-sm">
-                        <span class="text-slate-500 font-medium">Chi phí linh kiện: <strong class="text-slate-700">&lt; 30.000đ</strong></span>
-                        <span class="font-semibold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg">Độ ổn định thấp</span>
+                                <line x1="136" y1="68" x2="195" y2="68" stroke="#475569" stroke-width="1"/>
+                                <text x="198" y="71">Motor DC mini tận dụng</text>
+
+                                <line x1="128" y1="115" x2="195" y2="112" stroke="#475569" stroke-width="1"/>
+                                <text x="198" y="115">Tháp ống hút / ống nhựa</text>
+
+                                <line x1="145" y1="150" x2="195" y2="150" stroke="#dc2626" stroke-width="1"/>
+                                <text x="198" y="153" fill="#dc2626">Dây điện đi ngoài dễ tuột</text>
+
+                                <line x1="170" y1="198" x2="205" y2="188" stroke="#475569" stroke-width="1"/>
+                                <text x="208" y="191">Bóng LED đơn 3mm/5mm</text>
+
+                                <line x1="182" y1="215" x2="205" y2="225" stroke="#475569" stroke-width="1"/>
+                                <text x="208" y="228">Đế bìa carton ép lớp</text>
+                            </g>
+                        </svg>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- Bảng điểm chi tiết 5 tiêu chí -->
-            <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-                <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-                    <h3 class="font-bold text-slate-900 text-base sm:text-lg">Bảng chấm điểm & Nhận xét chi tiết 5 tiêu chí</h3>
-                    <span class="text-xs font-semibold text-blue-700 bg-blue-100 px-2.5 py-1 rounded-lg">Chênh lệch: +29 điểm</span>
+        <!-- 6. BẢNG CHẤM ĐIỂM 5 TIÊU CHÍ TƯƠNG TÁC (THANG 100 ĐIỂM) -->
+        <section id="cham-diem" class="space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Giai đoạn 3 • Đánh giá giải pháp</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">3. Bảng Chấm Điểm 5 Tiêu Chí Tương Tác (Thang 100đ)</h2>
                 </div>
+                <button onclick="resetRubricScores()" class="self-start sm:self-auto px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition no-print">
+                    ↺ Khôi phục điểm chuẩn (95đ vs 66đ)
+                </button>
+            </div>
 
+            <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-sm">
                         <thead>
-                            <tr class="bg-slate-100/80 text-slate-700 border-b border-slate-200">
-                                <th class="py-3.5 px-4 font-bold w-12 text-center">STT</th>
+                            <tr class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-b border-slate-200 dark:border-slate-700">
+                                <th class="py-3.5 px-4 font-bold text-center w-12">STT</th>
                                 <th class="py-3.5 px-4 font-bold min-w-[170px]">Tiêu chí đánh giá</th>
-                                <th class="py-3.5 px-4 font-bold text-center w-24">Trọng số</th>
-                                <th class="py-3.5 px-4 font-bold min-w-[260px] text-emerald-800 bg-emerald-50/50">Phương án 1 (Khung gỗ CNC & V2 Pro)</th>
-                                <th class="py-3.5 px-4 font-bold min-w-[260px] text-slate-700">Phương án 2 (Tái chế & Motor DC mini)</th>
+                                <th class="py-3.5 px-4 font-bold text-center w-20">Tối đa</th>
+                                <th class="py-3.5 px-4 font-bold min-w-[270px] text-emerald-800 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-950/30">Phương án 1: Khung gỗ CNC & V2 Pro</th>
+                                <th class="py-3.5 px-4 font-bold min-w-[270px]">Phương án 2: Tái chế & Motor DC mini</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-200">
-                            <!-- Tiêu chí 1 -->
-                            <tr class="hover:bg-slate-50/70 transition">
-                                <td class="py-4 px-4 text-center font-bold text-slate-500">1</td>
-                                <td class="py-4 px-4 font-bold text-slate-900">Kết cấu & Độ ổn định</td>
-                                <td class="py-4 px-4 text-center font-semibold text-slate-600">20đ</td>
-                                <td class="py-4 px-4 bg-emerald-50/30">
-                                    <div class="flex items-center justify-between font-bold text-emerald-700 mb-1">
-                                        <span>20 / 20đ</span>
-                                        <span class="text-xs">100%</span>
-                                    </div>
-                                    <div class="w-full bg-emerald-100 h-2 rounded-full mb-2">
-                                        <div class="bg-emerald-600 h-2 rounded-full" style="width: 100%"></div>
-                                    </div>
-                                    <p class="text-xs text-slate-600 leading-relaxed">Khung gỗ ghép mộng chắc chắn, chân đế rộng hạ thấp trọng tâm nên đứng vững và ít rung khi có gió.</p>
-                                </td>
-                                <td class="py-4 px-4">
-                                    <div class="flex items-center justify-between font-bold text-slate-700 mb-1">
-                                        <span>13 / 20đ</span>
-                                        <span class="text-xs">65%</span>
-                                    </div>
-                                    <div class="w-full bg-slate-200 h-2 rounded-full mb-2">
-                                        <div class="bg-slate-500 h-2 rounded-full" style="width: 65%"></div>
-                                    </div>
-                                    <p class="text-xs text-slate-600 leading-relaxed">Thân ống hút/ống nhựa và đế carton nhẹ nên dễ nghiêng lắc hoặc lung lay khi gặp gió mạnh.</p>
-                                </td>
-                            </tr>
-
-                            <!-- Tiêu chí 2 -->
-                            <tr class="hover:bg-slate-50/70 transition">
-                                <td class="py-4 px-4 text-center font-bold text-slate-500">2</td>
-                                <td class="py-4 px-4 font-bold text-slate-900">Hiệu suất phát điện</td>
-                                <td class="py-4 px-4 text-center font-semibold text-slate-600">30đ</td>
-                                <td class="py-4 px-4 bg-emerald-50/30">
-                                    <div class="flex items-center justify-between font-bold text-emerald-700 mb-1">
-                                        <span>29 / 30đ</span>
-                                        <span class="text-xs">97%</span>
-                                    </div>
-                                    <div class="w-full bg-emerald-100 h-2 rounded-full mb-2">
-                                        <div class="bg-emerald-600 h-2 rounded-full" style="width: 97%"></div>
-                                    </div>
-                                    <p class="text-xs text-slate-600 leading-relaxed">Cánh 8 cánh 120mm đón gió tốt kết hợp củ phát V2 Pro cho dòng điện ổn định, đèn LED COB sáng rõ.</p>
-                                </td>
-                                <td class="py-4 px-4">
-                                    <div class="flex items-center justify-between font-bold text-slate-700 mb-1">
-                                        <span>16 / 30đ</span>
-                                        <span class="text-xs">53%</span>
-                                    </div>
-                                    <div class="w-full bg-slate-200 h-2 rounded-full mb-2">
-                                        <div class="bg-slate-500 h-2 rounded-full" style="width: 53%"></div>
-                                    </div>
-                                    <p class="text-xs text-slate-600 leading-relaxed">Cánh thủ công dễ lệch tâm, motor mini tận dụng khó tạo điện ổn định khi gió nhẹ.</p>
-                                </td>
-                            </tr>
-
-                            <!-- Tiêu chí 3 -->
-                            <tr class="hover:bg-slate-50/70 transition">
-                                <td class="py-4 px-4 text-center font-bold text-slate-500">3</td>
-                                <td class="py-4 px-4 font-bold text-slate-900">Độ bền & An toàn</td>
-                                <td class="py-4 px-4 text-center font-semibold text-slate-600">20đ</td>
-                                <td class="py-4 px-4 bg-emerald-50/30">
-                                    <div class="flex items-center justify-between font-bold text-emerald-700 mb-1">
-                                        <span>19 / 20đ</span>
-                                        <span class="text-xs">95%</span>
-                                    </div>
-                                    <div class="w-full bg-emerald-100 h-2 rounded-full mb-2">
-                                        <div class="bg-emerald-600 h-2 rounded-full" style="width: 95%"></div>
-                                    </div>
-                                    <p class="text-xs text-slate-600 leading-relaxed">Gỗ cứng cáp chịu va đập tốt, dây điện đi ngầm gọn gàng nên an toàn khi di chuyển và trưng bày.</p>
-                                </td>
-                                <td class="py-4 px-4">
-                                    <div class="flex items-center justify-between font-bold text-slate-700 mb-1">
-                                        <span>12 / 20đ</span>
-                                        <span class="text-xs">60%</span>
-                                    </div>
-                                    <div class="w-full bg-slate-200 h-2 rounded-full mb-2">
-                                        <div class="bg-slate-500 h-2 rounded-full" style="width: 60%"></div>
-                                    </div>
-                                    <p class="text-xs text-slate-600 leading-relaxed">Bìa carton và mối keo dễ bong khi va chạm; dây đi ngoài dễ vướng víu hoặc tuột mối nối.</p>
-                                </td>
-                            </tr>
-
-                            <!-- Tiêu chí 4 -->
-                            <tr class="hover:bg-slate-50/70 transition">
-                                <td class="py-4 px-4 text-center font-bold text-slate-500">4</td>
-                                <td class="py-4 px-4 font-bold text-slate-900">Tính kinh tế & Môi trường</td>
-                                <td class="py-4 px-4 text-center font-semibold text-slate-600">15đ</td>
-                                <td class="py-4 px-4 bg-emerald-50/30">
-                                    <div class="flex items-center justify-between font-bold text-emerald-700 mb-1">
-                                        <span>12 / 15đ</span>
-                                        <span class="text-xs">80%</span>
-                                    </div>
-                                    <div class="w-full bg-emerald-100 h-2 rounded-full mb-2">
-                                        <div class="bg-emerald-600 h-2 rounded-full" style="width: 80%"></div>
-                                    </div>
-                                    <p class="text-xs text-slate-600 leading-relaxed">Chi phí nằm gọn trong ngân sách dự án, dùng gỗ thân thiện môi trường và tái sử dụng được nhiều lần.</p>
-                                </td>
-                                <td class="py-4 px-4">
-                                    <div class="flex items-center justify-between font-bold text-emerald-700 mb-1">
-                                        <span>15 / 15đ</span>
-                                        <span class="text-xs">100%</span>
-                                    </div>
-                                    <div class="w-full bg-emerald-100 h-2 rounded-full mb-2">
-                                        <div class="bg-emerald-500 h-2 rounded-full" style="width: 100%"></div>
-                                    </div>
-                                    <p class="text-xs text-slate-600 leading-relaxed">Chi phí rất thấp (dưới 30.000đ), tận dụng đồ tái chế nên nổi bật về tiết kiệm và bảo vệ môi trường.</p>
-                                </td>
-                            </tr>
-
-                            <!-- Tiêu chí 5 -->
-                            <tr class="hover:bg-slate-50/70 transition">
-                                <td class="py-4 px-4 text-center font-bold text-slate-500">5</td>
-                                <td class="py-4 px-4 font-bold text-slate-900">Tính thẩm mỹ</td>
-                                <td class="py-4 px-4 text-center font-semibold text-slate-600">15đ</td>
-                                <td class="py-4 px-4 bg-emerald-50/30">
-                                    <div class="flex items-center justify-between font-bold text-emerald-700 mb-1">
-                                        <span>15 / 15đ</span>
-                                        <span class="text-xs">100%</span>
-                                    </div>
-                                    <div class="w-full bg-emerald-100 h-2 rounded-full mb-2">
-                                        <div class="bg-emerald-600 h-2 rounded-full" style="width: 100%"></div>
-                                    </div>
-                                    <p class="text-xs text-slate-600 leading-relaxed">Các chi tiết cắt CNC sắc nét, bố cục gọn gàng, sạch sẽ, nhìn chuyên nghiệp trên bàn thi.</p>
-                                </td>
-                                <td class="py-4 px-4">
-                                    <div class="flex items-center justify-between font-bold text-slate-700 mb-1">
-                                        <span>10 / 15đ</span>
-                                        <span class="text-xs">67%</span>
-                                    </div>
-                                    <div class="w-full bg-slate-200 h-2 rounded-full mb-2">
-                                        <div class="bg-slate-500 h-2 rounded-full" style="width: 67%"></div>
-                                    </div>
-                                    <p class="text-xs text-slate-600 leading-relaxed">Mang nét thủ công đơn giản, nhưng vết cắt nhựa và mối dán khó đạt độ đều đẹp cao.</p>
-                                </td>
-                            </tr>
+                        <tbody id="rubric-tbody" class="divide-y divide-slate-200 dark:divide-slate-800">
+                            <!-- Dữ liệu render bằng JS để hỗ trợ kéo thanh trượt tự chấm điểm -->
                         </tbody>
                         <tfoot>
                             <tr class="bg-slate-900 text-white font-bold">
-                                <td colspan="2" class="py-4 px-4 text-right uppercase tracking-wider text-xs sm:text-sm">Tổng điểm đánh giá</td>
+                                <td colspan="2" class="py-4 px-4 text-right uppercase text-xs sm:text-sm">Tổng điểm đánh giá:</td>
                                 <td class="py-4 px-4 text-center">100đ</td>
-                                <td class="py-4 px-4 text-emerald-400 text-base sm:text-lg">95 / 100 điểm (Tối ưu nhất)</td>
-                                <td class="py-4 px-4 text-slate-300 text-base">66 / 100 điểm</td>
+                                <td class="py-4 px-4 text-emerald-400 text-base sm:text-lg">
+                                    <span id="total-pa1">95</span> / 100 điểm
+                                </td>
+                                <td class="py-4 px-4 text-slate-300 text-base sm:text-lg">
+                                    <span id="total-pa2">66</span> / 100 điểm
+                                </td>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
+                <div id="rubric-verdict" class="px-6 py-3.5 bg-emerald-50 dark:bg-emerald-950/50 border-t border-emerald-200 dark:border-emerald-900 text-xs sm:text-sm font-semibold text-emerald-900 dark:text-emerald-300">
+                    🏆 Kết luận tự động: Phương án 1 dẫn trước +29 điểm (95đ so với 66đ) → Là lựa chọn tối ưu nhất cho cuộc thi STEM!
+                </div>
             </div>
         </section>
 
-        <!-- 3. LẬP LUẬN KHOA HỌC LỰA CHỌN PHƯƠNG ÁN 1 -->
-        <section id="lap-luan" class="space-y-6">
+        <!-- 7 & 8. LẬP LUẬN KHOA HỌC 3 TRỤ CỘT & CÔNG CỤ TÍNH TOÁN VẬT LÝ STEM -->
+        <section id="khoa-hoc" class="space-y-6">
             <div>
-                <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">Cơ sở Khoa học Tự nhiên Lớp 7</span>
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">3 Lập Luận Khoa Học Chọn Phương Án 1</h2>
-                <p class="text-sm sm:text-base text-slate-600 mt-1">Giải thích nguyên lý hoạt động và lý do lựa chọn bằng kiến thức Vật lý – Công nghệ phù hợp trình độ THCS.</p>
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">Cơ sở Khoa học Tự nhiên & Toán ứng dụng</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">4. Lập Luận Khoa Học & Máy Tính Vật Lý STEM</h2>
             </div>
 
+            <!-- 3 Trụ cột khoa học -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Thẻ 1: Khí động học -->
-                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 hover:shadow-md transition flex flex-col">
-                    <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center mb-4 font-extrabold text-xl">
-                        🌬️
+                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-3">
+                    <div class="w-11 h-11 rounded-2xl bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 flex items-center justify-center font-bold text-xl">🌬️</div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">Trụ cột 1: Khí động học</h3>
+                    <div class="bg-blue-50 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 font-mono text-xs font-bold px-3 py-2 rounded-xl">
+                        Mô-men xoắn: M = F · d
                     </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-2">1. Khí động học & Mô-men quay</h3>
-                    <div class="bg-blue-50 text-blue-900 font-mono text-xs sm:text-sm font-bold px-3 py-2 rounded-xl mb-3 border border-blue-100">
-                        Công thức mô-men: M = F · d
-                    </div>
-                    <p class="text-sm text-slate-600 leading-relaxed flex-1">
-                        Cánh quạt nhựa PP <strong>8 cánh đường kính 120mm</strong> tạo diện tích quét gió lớn và nhiều bề mặt đón luồng không khí. Khi gió thổi vào các cánh nghiêng, lực cản và lực nâng khí động học sinh ra <strong>mô-men quay</strong> đủ lớn để thắng lực ma sát tĩnh ban đầu, giúp cánh quay đều quanh trục và hạn chế lệch tâm.
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Cánh 8 cánh đường kính 120mm tăng diện tích quét gió, tạo mô-men quay đều quanh trục, dễ thắng ma sát tĩnh ban đầu và triệt tiêu lệch tâm khi quay nhanh.
                     </p>
                 </div>
 
-                <!-- Thẻ 2: Cảm ứng điện từ -->
-                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 hover:shadow-md transition flex flex-col">
-                    <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center mb-4 font-extrabold text-xl">
-                        ⚡
-                    </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-2">2. Cảm ứng điện từ & Phụ tải</h3>
-                    <div class="bg-amber-50 text-amber-900 font-mono text-xs sm:text-sm font-bold px-3 py-2 rounded-xl mb-3 border border-amber-100">
+                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-3">
+                    <div class="w-11 h-11 rounded-2xl bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 flex items-center justify-center font-bold text-xl">⚡</div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">Trụ cột 2: Cảm ứng điện từ</h3>
+                    <div class="bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 font-mono text-xs font-bold px-3 py-2 rounded-xl">
                         Cơ năng → Điện năng (DC) → Quang năng
                     </div>
-                    <p class="text-sm text-slate-600 leading-relaxed flex-1">
-                        Khi cánh quạt quay kéo theo rô-to nam châm vĩnh cửu bên trong <strong>củ phát V2 Pro</strong> quay, từ thông xuyên qua các cuộn dây biến thiên liên tục sinh ra dòng điện một chiều ổn định. Trục ngắn <strong>2mm</strong> truyền động trực tiếp giúp giảm hao phí cơ năng, đủ sức thắp sáng rõ <strong>đèn LED COB (3V–5V)</strong>.
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Rô-to nam châm vĩnh cửu trong củ phát V2 Pro quay làm từ thông qua cuộn dây biến thiên liên tục, tạo dòng điện 1 chiều ổn định thắp sáng đèn LED COB (3V–5V).
                     </p>
                 </div>
 
-                <!-- Thẻ 3: Cơ học kết cấu -->
-                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 hover:shadow-md transition flex flex-col">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center mb-4 font-extrabold text-xl">
-                        🏗️
-                    </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-2">3. Cơ học kết cấu & An toàn điện</h3>
-                    <div class="bg-emerald-50 text-emerald-900 font-mono text-xs sm:text-sm font-bold px-3 py-2 rounded-xl mb-3 border border-emerald-100">
+                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-3">
+                    <div class="w-11 h-11 rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold text-xl">🏗️</div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">Trụ cột 3: Cơ học kết cấu</h3>
+                    <div class="bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 font-mono text-xs font-bold px-3 py-2 rounded-xl">
                         Đế rộng + Giằng chéo = Hạ trọng tâm
                     </div>
-                    <p class="text-sm text-slate-600 leading-relaxed flex-1">
-                        Hệ <strong>khung tháp gỗ CNC 4 chân</strong> có thanh giằng ngang/chéo kết hợp đế vuông bản rộng giúp hạ thấp trọng tâm mô hình, tăng diện tích mặt chân đế để chống lật và triệt tiêu rung lắc trước gió mạnh. Dây điện <strong>đi ngầm dọc thân tháp</strong> đảm bảo thẩm mỹ và tránh đứt ngầm khi di chuyển.
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Khung tháp gỗ CNC 4 chân có thanh giằng kết hợp chân đế rộng giúp hạ thấp trọng tâm, chống lật trước gió trực diện; dây đi ngầm bảo vệ mối nối an toàn.
                     </p>
+                </div>
+            </div>
+
+            <!-- Máy tính Vật lý & Kỹ thuật STEM (Chức năng 8) -->
+            <div class="bg-gradient-to-r from-slate-900 to-blue-950 text-white rounded-3xl p-6 sm:p-7 shadow-md no-print">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                    <div class="space-y-1.5 max-w-md">
+                        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Công cụ tính nhanh số liệu báo cáo</span>
+                        <h3 class="text-xl font-extrabold">Máy tính Thông số Kỹ thuật Tua-bin</h3>
+                        <p class="text-xs sm:text-sm text-slate-300">Nhập đường kính cánh quạt, lực gió và thông số đo thực tế từ đồng hồ vạn năng để tính diện tích quét gió, mô-men quay và công suất điện.</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 flex-1">
+                        <div class="bg-white/10 rounded-2xl p-3 border border-white/15">
+                            <label class="block text-[11px] text-slate-300 mb-1">Đường kính cánh (mm)</label>
+                            <input id="calc-diameter" type="number" value="120" oninput="calculateStemPhysics()" class="w-full bg-slate-900/80 border border-slate-600 rounded-lg px-2.5 py-1.5 text-sm font-bold text-white">
+                        </div>
+                        <div class="bg-white/10 rounded-2xl p-3 border border-white/15">
+                            <label class="block text-[11px] text-slate-300 mb-1">Lực gió tác dụng F (N)</label>
+                            <input id="calc-force" type="number" step="0.05" value="0.25" oninput="calculateStemPhysics()" class="w-full bg-slate-900/80 border border-slate-600 rounded-lg px-2.5 py-1.5 text-sm font-bold text-white">
+                        </div>
+                        <div class="bg-white/10 rounded-2xl p-3 border border-white/15">
+                            <label class="block text-[11px] text-slate-300 mb-1">Điện áp đo được U (V)</label>
+                            <input id="calc-u" type="number" step="0.1" value="3.6" oninput="calculateStemPhysics()" class="w-full bg-slate-900/80 border border-slate-600 rounded-lg px-2.5 py-1.5 text-sm font-bold text-white">
+                        </div>
+                        <div class="bg-white/10 rounded-2xl p-3 border border-white/15">
+                            <label class="block text-[11px] text-slate-300 mb-1">Dòng điện đo I (mA)</label>
+                            <input id="calc-i" type="number" step="5" value="120" oninput="calculateStemPhysics()" class="w-full bg-slate-900/80 border border-slate-600 rounded-lg px-2.5 py-1.5 text-sm font-bold text-white">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5 pt-4 border-t border-white/15 text-sm">
+                    <div class="bg-white/5 rounded-xl px-4 py-2.5 flex justify-between items-center">
+                        <span class="text-slate-300">Diện tích quét gió (S = π·R²):</span>
+                        <span id="res-area" class="font-extrabold text-emerald-400">113.10 cm²</span>
+                    </div>
+                    <div class="bg-white/5 rounded-xl px-4 py-2.5 flex justify-between items-center">
+                        <span class="text-slate-300">Mô-men quay đầu cánh (M = F·R):</span>
+                        <span id="res-torque" class="font-extrabold text-blue-300">0.0150 N·m</span>
+                    </div>
+                    <div class="bg-white/5 rounded-xl px-4 py-2.5 flex justify-between items-center">
+                        <span class="text-slate-300">Công suất điện (P = U·I):</span>
+                        <span id="res-power" class="font-extrabold text-amber-300">432.0 mW</span>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- 4. DANH MỤC VẬT TƯ, LINH KIỆN (BOM) & DỰ TRÙ CHI PHÍ -->
-        <section id="vat-tu" class="space-y-6">
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+        <!-- 9 & 10. BẢNG DANH MỤC VẬT TƯ (BOM) TƯƠNG TÁC & CHECKLIST LẮP RÁP -->
+        <section id="vat-tu" class="space-y-8">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
                 <div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Giai đoạn 4 • Chuẩn bị nguồn lực</span>
-                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Danh Mục Vật Tư, Linh Kiện (BOM)</h2>
+                    <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Giai đoạn 4 • Quản lý vật tư & Ngân sách</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">5. Danh Mục Vật Tư (BOM) & Checklist Chuẩn Bị</h2>
                 </div>
-                <span class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl">
-                    Tổng dự trù: ~73.000 – 145.000 VNĐ (+10k–20k dự phòng)
-                </span>
+                <!-- Bộ lọc trạng thái BOM -->
+                <div class="flex items-center gap-1.5 no-print">
+                    <button onclick="filterBom('all')" class="bom-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-600 text-white" data-filter="all">Tất cả (6)</button>
+                    <button onclick="filterBom('shopee')" class="bom-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300" data-filter="shopee">Cần đặt Shopee (4)</button>
+                    <button onclick="filterBom('home')" class="bom-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300" data-filter="home">Có sẵn tại nhà (2)</button>
+                </div>
             </div>
 
-            <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+            <!-- Bảng BOM tự động tính tổng tiền thực tế -->
+            <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-sm">
                         <thead>
-                            <tr class="bg-slate-100/90 text-slate-700 border-b border-slate-200">
+                            <tr class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-b border-slate-200 dark:border-slate-700">
                                 <th class="py-3.5 px-4 font-bold text-center w-12">STT</th>
                                 <th class="py-3.5 px-4 font-bold min-w-[200px]">Tên vật tư / Linh kiện</th>
-                                <th class="py-3.5 px-4 font-bold min-w-[180px]">Thông số kỹ thuật</th>
-                                <th class="py-3.5 px-4 font-bold text-center w-16">SL</th>
-                                <th class="py-3.5 px-4 font-bold min-w-[210px]">Vai trò trong mô hình</th>
-                                <th class="py-3.5 px-4 font-bold text-right min-w-[145px]">Chi phí ước tính</th>
+                                <th class="py-3.5 px-4 font-bold min-w-[170px]">Thông số kỹ thuật</th>
+                                <th class="py-3.5 px-4 font-bold text-center w-14">SL</th>
+                                <th class="py-3.5 px-4 font-bold min-w-[130px]">Nguồn cung</th>
+                                <th class="py-3.5 px-4 font-bold text-right min-w-[135px]">Giá ước tính</th>
+                                <th class="py-3.5 px-4 font-bold text-right min-w-[140px]">Giá thực tế (đ)</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-200">
-                            <tr class="hover:bg-blue-50/40 transition">
-                                <td class="py-3.5 px-4 text-center font-bold text-slate-500">1</td>
-                                <td class="py-3.5 px-4 font-bold text-slate-900">Củ phát điện DC V2 Pro</td>
-                                <td class="py-3.5 px-4 text-slate-600">Nam châm vĩnh cửu, 0.1V–22V DC, <strong class="text-blue-700">trục 2mm</strong></td>
-                                <td class="py-3.5 px-4 text-center font-semibold">1</td>
-                                <td class="py-3.5 px-4 text-slate-600">Chuyển hóa cơ năng quay thành điện một chiều</td>
-                                <td class="py-3.5 px-4 text-right font-semibold text-slate-800">25.000 – 40.000đ</td>
-                            </tr>
-                            <tr class="hover:bg-blue-50/40 transition">
-                                <td class="py-3.5 px-4 text-center font-bold text-slate-500">2</td>
-                                <td class="py-3.5 px-4 font-bold text-slate-900">Cánh quạt nhựa PP 8 cánh</td>
-                                <td class="py-3.5 px-4 text-slate-600">Đúc nguyên khối, đường kính <strong class="text-blue-700">120mm</strong>, lỗ 2mm</td>
-                                <td class="py-3.5 px-4 text-center font-semibold">1</td>
-                                <td class="py-3.5 px-4 text-slate-600">Đón luồng gió và tạo mô-men quay cho trục</td>
-                                <td class="py-3.5 px-4 text-right font-semibold text-slate-800">10.000 – 20.000đ</td>
-                            </tr>
-                            <tr class="hover:bg-blue-50/40 transition">
-                                <td class="py-3.5 px-4 text-center font-bold text-slate-500">3</td>
-                                <td class="py-3.5 px-4 font-bold text-slate-900">Khung tháp & Đế gỗ cắt CNC</td>
-                                <td class="py-3.5 px-4 text-slate-600">Gỗ ép cắt Laser CNC 4 chân giằng + đế vuông</td>
-                                <td class="py-3.5 px-4 text-center font-semibold">1 bộ</td>
-                                <td class="py-3.5 px-4 text-slate-600">Chịu lực, hạ trọng tâm, giữ vững tháp & củ phát</td>
-                                <td class="py-3.5 px-4 text-right font-semibold text-slate-800">25.000 – 45.000đ</td>
-                            </tr>
-                            <tr class="hover:bg-blue-50/40 transition">
-                                <td class="py-3.5 px-4 text-center font-bold text-slate-500">4</td>
-                                <td class="py-3.5 px-4 font-bold text-slate-900">Module đèn LED COB</td>
-                                <td class="py-3.5 px-4 text-slate-600">Đèn LED COB siêu sáng, điện áp thấp 3V–5V</td>
-                                <td class="py-3.5 px-4 text-center font-semibold">1</td>
-                                <td class="py-3.5 px-4 text-slate-600">Phụ tải hiển thị trực quan khi phát ra điện</td>
-                                <td class="py-3.5 px-4 text-right font-semibold text-slate-800">5.000 – 15.000đ</td>
-                            </tr>
-                            <tr class="hover:bg-blue-50/40 transition">
-                                <td class="py-3.5 px-4 text-center font-bold text-slate-500">5</td>
-                                <td class="py-3.5 px-4 font-bold text-slate-900">Dây dẫn điện lõi đồng</td>
-                                <td class="py-3.5 px-4 text-slate-600">Dây đôi mềm bọc cách điện (dài 0.5 – 1m)</td>
-                                <td class="py-3.5 px-4 text-center font-semibold">1 đoạn</td>
-                                <td class="py-3.5 px-4 text-slate-600">Dẫn điện đi ngầm từ củ phát xuống đèn LED</td>
-                                <td class="py-3.5 px-4 text-right font-semibold text-slate-800">3.000 – 5.000đ</td>
-                            </tr>
-                            <tr class="hover:bg-blue-50/40 transition">
-                                <td class="py-3.5 px-4 text-center font-bold text-slate-500">6</td>
-                                <td class="py-3.5 px-4 font-bold text-slate-900">Keo dán gỗ / Keo nến & Băng keo điện</td>
-                                <td class="py-3.5 px-4 text-slate-600">Cố định mối ghép gỗ, cách điện mối nối</td>
-                                <td class="py-3.5 px-4 text-center font-semibold">1 ít</td>
-                                <td class="py-3.5 px-4 text-slate-600">Gia cố kết cấu & đảm bảo an toàn mạch điện</td>
-                                <td class="py-3.5 px-4 text-right font-semibold text-slate-800">5.000 – 10.000đ</td>
-                            </tr>
+                        <tbody id="bom-tbody" class="divide-y divide-slate-200 dark:divide-slate-800">
+                            <!-- Render qua JS -->
                         </tbody>
                         <tfoot>
-                            <tr class="bg-blue-50/80 border-t-2 border-blue-200 font-bold text-slate-900">
-                                <td colspan="5" class="py-3.5 px-4 text-right">TỔNG CHI PHÍ VẬT TƯ CHÍNH (Nằm gọn trong hạn mức 100.000 – 200.000đ):</td>
-                                <td class="py-3.5 px-4 text-right text-blue-700 text-base">~73.000 – 145.000đ</td>
+                            <tr class="bg-blue-50/80 dark:bg-slate-800/90 border-t-2 border-blue-200 dark:border-slate-700 font-bold">
+                                <td colspan="5" class="py-3.5 px-4 text-right text-slate-800 dark:text-slate-200">
+                                    TỔNG CHI PHÍ THỰC TẾ (Ngân sách cho phép: 100.000 – 200.000đ):
+                                </td>
+                                <td class="py-3.5 px-4 text-right text-slate-500 text-xs">~73k – 145k</td>
+                                <td class="py-3.5 px-4 text-right text-blue-700 dark:text-blue-400 text-base">
+                                    <span id="bom-actual-total">105.000</span> đ
+                                </td>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
+                <div id="bom-budget-status" class="px-6 py-3 bg-emerald-50 dark:bg-emerald-950/50 border-t border-emerald-200 dark:border-emerald-900 text-xs font-semibold text-emerald-800 dark:text-emerald-300 flex flex-wrap justify-between gap-2">
+                    <span>✅ Hợp lệ ngân sách: Tổng chi phí thực tế nằm gọn trong hạn mức 100.000 – 200.000 VNĐ.</span>
+                    <span>💡 Mẹo: Gom 4 món chính trên cùng 1 shop Shopee để tiết kiệm phí ship.</span>
+                </div>
             </div>
 
-            <!-- Lưu ý kỹ thuật quan trọng & Nguồn mua -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div class="bg-amber-50/90 border border-amber-200 rounded-2xl p-5 space-y-2.5">
-                    <h4 class="font-bold text-amber-900 flex items-center gap-2 text-base">
-                        <span>⚠️</span> Lưu ý kỹ thuật quan trọng trước khi lắp cố định
-                    </h4>
-                    <ul class="space-y-2 text-sm text-amber-900/90">
-                        <li class="flex items-start gap-2">
-                            <span class="font-bold">1.</span>
-                            <span><strong>Đối chiếu khớp trục 2mm:</strong> Kiểm tra đường kính trục củ phát V2 Pro (<strong>2mm</strong>) và lỗ cắm của cánh quạt 120mm để cắm vừa khít, không lỏng tuột hay cọ vào thân củ phát.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="font-bold">2.</span>
-                            <span><strong>Thử chiều phân cực (+/-) đèn LED COB:</strong> LED chỉ sáng đúng chiều cực; cần quay thử cánh quạt và chạm tạm 2 đầu dây vào LED trước khi đi dây ngầm và dán keo cố định.</span>
-                        </li>
-                    </ul>
+            <!-- Checklist 4 nhóm chuẩn bị & lắp ráp (Lưu localStorage) -->
+            <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                        <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">✅ Checklist Chuẩn Bị & Lắp Ráp (Tự động lưu tiến độ)</h3>
+                        <p class="text-xs text-slate-500">Tích chọn từng món bạn đã mua hoặc chuẩn bị xong trước khi lắp ráp</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span id="checklist-progress-text" class="text-xs font-extrabold text-emerald-700 bg-emerald-50 dark:bg-emerald-950 px-3 py-1 rounded-full">Đã xong: 0 / 12 mục</span>
+                        <button onclick="resetChecklist()" class="text-xs font-semibold text-slate-400 hover:text-rose-500 no-print">Đặt lại</button>
+                    </div>
                 </div>
 
-                <div class="bg-blue-50/90 border border-blue-200 rounded-2xl p-5 space-y-2.5">
-                    <h4 class="font-bold text-blue-900 flex items-center gap-2 text-base">
-                        <span>🛒</span> Kênh cung ứng & Dụng cụ hỗ trợ tại nhà
-                    </h4>
-                    <ul class="space-y-2 text-sm text-blue-900/90">
-                        <li class="flex items-start gap-2">
-                            <span class="font-bold">•</span>
-                            <span><strong>Đặt mua linh kiện chính trên Shopee:</strong> Gom chung 1 shop linh kiện STEM/DIY gần khu vực để tiết kiệm phí vận chuyển và nhận hàng nhanh.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="font-bold">•</span>
-                            <span><strong>Tận dụng đồ có sẵn tại nhà:</strong> Keo nến, băng keo điện, kéo/dao rọc giấy, giấy nhám mịn (nếu cần) và <strong>quạt bàn/quạt mini</strong> để kiểm thử tốc độ gió.</span>
-                        </li>
-                    </ul>
+                <div id="checklist-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Render 4 nhóm bằng JS -->
                 </div>
             </div>
         </section>
 
-        <!-- 5. NHẬT KÝ THỰC HIỆN DỰ ÁN (GIAI ĐOẠN 1 - 4) & KẾ HOẠCH TIẾP THEO -->
+        <!-- 11. NHẬT KÝ TIẾN ĐỘ DỰ ÁN (GIAI ĐOẠN 1 - 4 + THÊM GHI CHÚ GIAI ĐOẠN 5) -->
         <section id="nhat-ky" class="space-y-6">
             <div>
-                <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">Theo dõi tiến độ & Tổ chức thực hiện</span>
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Nhật Ký Dự Án (GĐ 1 – 4) & Kế Hoạch Tiếp Theo</h2>
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">Project Log • Theo dõi thực tế</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">6. Nhật Ký Dự Án (GĐ 1 – 4) & Cập Nhật Giai Đoạn 5</h2>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- Timeline 5 giai đoạn -->
-                <div class="lg:col-span-8 bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-7">
-                    <div class="relative border-l-2 border-slate-200 ml-3.5 space-y-7">
-                        
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Danh sách nhật ký -->
+                <div class="lg:col-span-8 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+                    <div id="project-log-list" class="relative border-l-2 border-slate-200 dark:border-slate-700 ml-3 space-y-6">
                         <!-- Giai đoạn 1 -->
-                        <div class="relative pl-7">
-                            <span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold ring-4 ring-white">✓</span>
-                            <div class="flex flex-wrap items-center justify-between gap-2">
-                                <h3 class="font-bold text-slate-900 text-base">Giai đoạn 1: Xác định vấn đề & Đề xuất 2 phương án</h3>
-                                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Đã hoàn thành (Ngày 1)</span>
+                        <div class="relative pl-6">
+                            <span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold">✓</span>
+                            <div class="flex flex-wrap items-center justify-between gap-1">
+                                <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">Giai đoạn 1: Xác định bài toán & Đề xuất 2 phương án</h3>
+                                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Hoàn thành</span>
                             </div>
-                            <p class="text-sm text-slate-600 mt-1.5 leading-relaxed">
-                                Xác định mục tiêu chuyển hóa gió thành điện năng làm sáng đèn LED trong ngân sách 100.000 – 200.000đ. Đề xuất thông số chi tiết cho Phương án 1 (Khung gỗ CNC + Củ phát V2 Pro) và Phương án 2 (Vật liệu tái chế + Motor DC mini).
-                            </p>
+                            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1">Xác định mục tiêu làm sáng đèn LED từ năng lượng gió trong hạn mức 100.000 – 200.000đ. Lập thông số cho PA1 (Khung gỗ CNC + V2 Pro) và PA2 (Tái chế + Motor mini).</p>
                         </div>
 
                         <!-- Giai đoạn 2 -->
-                        <div class="relative pl-7">
-                            <span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold ring-4 ring-white">✓</span>
-                            <div class="flex flex-wrap items-center justify-between gap-2">
-                                <h3 class="font-bold text-slate-900 text-base">Giai đoạn 2: Vẽ phác thảo thiết kế trên giấy ô ly</h3>
-                                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Đã hoàn thành (Ngày 1–2)</span>
+                        <div class="relative pl-6">
+                            <span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold">✓</span>
+                            <div class="flex flex-wrap items-center justify-between gap-1">
+                                <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">Giai đoạn 2: Vẽ phác thảo kỹ thuật trên giấy ô ly</h3>
+                                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Hoàn thành</span>
                             </div>
-                            <p class="text-sm text-slate-600 mt-1.5 leading-relaxed">
-                                Phác thảo trực quan cả 2 phương án trên trang giấy tập học sinh (chia đôi bố cục trái – phải) kèm đầy đủ mũi tên chú thích cấu tạo: cánh quạt, củ phát/motor, khung tháp, dây dẫn, đèn LED và chân đế.
-                            </p>
+                            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1">Vẽ phác thảo 2 phương án trên giấy tập học sinh (chia đôi bố cục trái – phải) kèm chú thích đầy đủ các bộ phận cấu thành.</p>
                         </div>
 
                         <!-- Giai đoạn 3 -->
-                        <div class="relative pl-7">
-                            <span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold ring-4 ring-white">✓</span>
-                            <div class="flex flex-wrap items-center justify-between gap-2">
-                                <h3 class="font-bold text-slate-900 text-base">Giai đoạn 3: Đánh giá 5 tiêu chí & Chốt giải pháp tối ưu</h3>
-                                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Đã hoàn thành (Ngày 2)</span>
+                        <div class="relative pl-6">
+                            <span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold">✓</span>
+                            <div class="flex flex-wrap items-center justify-between gap-1">
+                                <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">Giai đoạn 3: Chấm điểm 5 tiêu chí & Chốt Phương án 1</h3>
+                                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Hoàn thành</span>
                             </div>
-                            <p class="text-sm text-slate-600 mt-1.5 leading-relaxed">
-                                Chấm điểm định lượng thang 100: <strong>Phương án 1 đạt 95/100 điểm</strong> (vượt trội so với 66/100 điểm của Phương án 2). Hoàn thiện lập luận khoa học về khí động học, cảm ứng điện từ và cơ học kết cấu để chốt Phương án 1.
-                            </p>
+                            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1">PA1 đạt 95/100 điểm (so với 66/100đ của PA2). Hoàn thiện lập luận khoa học về khí động học, cảm ứng điện từ và cơ học kết cấu.</p>
                         </div>
 
                         <!-- Giai đoạn 4 (Hiện tại) -->
-                        <div class="relative pl-7">
-                            <span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">4</span>
-                            <div class="bg-blue-50/70 border border-blue-200 rounded-2xl p-4 -mt-1">
-                                <div class="flex flex-wrap items-center justify-between gap-2">
-                                    <h3 class="font-bold text-blue-900 text-base">Giai đoạn 4: Lập BOM, Kế hoạch & Chuẩn bị đặt hàng</h3>
-                                    <span class="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-blue-600 text-white">TIẾN ĐỘ HIỆN TẠI (Ngày 2–3)</span>
+                        <div class="relative pl-6">
+                            <span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">4</span>
+                            <div class="bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-2xl p-3.5">
+                                <div class="flex flex-wrap items-center justify-between gap-1">
+                                    <h3 class="font-bold text-blue-900 dark:text-blue-300 text-sm sm:text-base">Giai đoạn 4: Lập BOM, Kế hoạch & Đặt mua Shopee</h3>
+                                    <span class="text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-blue-600 text-white">HIỆN TẠI</span>
                                 </div>
-                                <p class="text-sm text-slate-700 mt-1.5 leading-relaxed">
-                                    Hoàn thiện danh mục vật tư BOM 6 hạng mục (~73.000 – 145.000đ), lập kế hoạch thời gian – chi phí – phân công vai trò, rà soát dụng cụ có sẵn tại nhà và chốt đơn đặt linh kiện trên Shopee (lưu ý kỹ khớp trục 2mm).
-                                </p>
+                                <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 mt-1">Chốt danh mục 6 vật tư BOM (~73k – 145k), đối chiếu khớp trục 2mm giữa củ phát V2 Pro và cánh 120mm, chuẩn bị dụng cụ tại nhà.</p>
                             </div>
                         </div>
 
-                        <!-- Giai đoạn 5 (Sắp tới) -->
-                        <div class="relative pl-7">
-                            <span class="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold ring-4 ring-white">5</span>
-                            <div class="flex flex-wrap items-center justify-between gap-2">
-                                <h3 class="font-bold text-slate-700 text-base">Giai đoạn 5: Lắp ráp, Kiểm thử (Test) & Thuyết trình</h3>
-                                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600">Sắp triển khai (Ngày 3–7)</span>
-                            </div>
-                            <p class="text-sm text-slate-500 mt-1.5 leading-relaxed">
-                                Nhận linh kiện, lắp khung gỗ CNC, đi dây ngầm, kiểm tra chiều cực đèn LED COB, chạy thử với quạt bàn ở nhiều mức gió để tinh chỉnh cân bằng, hoàn thiện hồ sơ và luyện tập thuyết trình trước ban giám khảo.
-                            </p>
-                        </div>
-
+                        <!-- Khu vực hiển thị các ghi chú Giai đoạn 5 người dùng tự thêm -->
+                        <div id="custom-logs-container" class="space-y-4"></div>
                     </div>
                 </div>
 
-                <!-- Phân công vai trò & Hồ sơ mang đi thi -->
-                <div class="lg:col-span-4 space-y-5">
-                    <!-- Phân công vai trò -->
-                    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-4">
-                        <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2">
-                            <span>👥</span> Phân công vai trò thực hiện
+                <!-- Form thêm nhanh nhật ký Giai đoạn 5 khi lắp ráp thực tế -->
+                <div class="lg:col-span-4 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm flex flex-col justify-between space-y-4 no-print">
+                    <div class="space-y-3">
+                        <h3 class="font-extrabold text-slate-900 dark:text-white text-base flex items-center gap-2">
+                            <span>📝</span> Ghi nhanh Nhật ký Giai đoạn 5
                         </h3>
-                        <p class="text-xs text-slate-500">Chia theo 3 nhóm đầu việc (áp dụng cho nhóm hoặc chia theo buổi nếu làm cá nhân):</p>
-                        
-                        <div class="space-y-3">
-                            <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-                                <div class="font-bold text-sm text-blue-700">1. Thiết kế & Lắp ráp chính</div>
-                                <p class="text-xs text-slate-600 mt-1 leading-relaxed">Chốt bản vẽ, lập BOM, lắp khung gỗ CNC, cố định củ phát V2 Pro, cánh quạt 120mm và đi dây ngầm.</p>
-                            </div>
-                            <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-                                <div class="font-bold text-sm text-emerald-700">2. Kiểm thử (Test) & An toàn điện</div>
-                                <p class="text-xs text-slate-600 mt-1 leading-relaxed">Kiểm tra cực (+/-) đèn LED COB, thử nghiệm độ sáng dưới quạt gió, bọc cách điện mối nối & chống rung.</p>
-                            </div>
-                            <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-                                <div class="font-bold text-sm text-amber-700">3. Hồ sơ & Thuyết trình</div>
-                                <p class="text-xs text-slate-600 mt-1 leading-relaxed">Tổng hợp bản vẽ ô ly, bảng điểm 5 tiêu chí, viết nhật ký dự án và chuẩn bị kịch bản thuyết minh 1–2 phút.</p>
-                            </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Khi nhận hàng Shopee và bắt đầu lắp ráp / chạy thử với quạt bàn, hãy ghi lại kết quả thực tế tại đây:</p>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1">Mốc công việc / Ngày thực hiện:</label>
+                            <input id="log-title-input" type="text" placeholder="VD: GĐ 5 - Ngày 4: Lắp khung & Test quạt mức 2" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1">Kết quả quan sát & Điều chỉnh:</label>
+                            <textarea id="log-desc-input" rows="3" placeholder="VD: Đèn LED COB sáng rõ, cánh quay êm, đã gia cố thêm keo nến ở chân đế..." class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs"></textarea>
+                        </div>
+                    </div>
+                    <button onclick="addCustomLog()" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700 transition shadow-sm">
+                        + Thêm vào Nhật ký dự án
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 12. KỊCH BẢN THUYẾT TRÌNH 2 PHÚT, ĐỒNG HỒ BẤM GIỜ & THẺ PHẢN BIỆN GIÁM KHẢO -->
+        <section id="thuyet-trinh" class="space-y-6 no-print">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Sẵn sàng bảo vệ sản phẩm trước Ban giám khảo</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">7. Kịch Bản Thuyết Trình 2 Phút & Câu Hỏi Phản Biện</h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Kịch bản thuyết trình + Đồng hồ bấm giờ 120 giây -->
+                <div class="lg:col-span-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
+                        <h3 class="font-extrabold text-slate-900 dark:text-white text-base">🎙️ Bài thuyết trình mẫu (Chuẩn 2 phút)</h3>
+                        <!-- Bộ đếm giờ luyện tập -->
+                        <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-xl">
+                            <span id="timer-display" class="font-mono font-extrabold text-sm text-blue-600 dark:text-blue-400">02:00</span>
+                            <button onclick="toggleTimer()" id="timer-btn" class="text-xs font-bold px-2 py-0.5 rounded bg-blue-600 text-white">Bắt đầu</button>
+                            <button onclick="resetTimer()" class="text-xs font-semibold text-slate-500 hover:text-slate-800">Đặt lại</button>
                         </div>
                     </div>
 
-                    <!-- Checklist hồ sơ giấy mang theo ngày thi -->
-                    <div class="bg-gradient-to-br from-slate-900 to-blue-950 text-white rounded-3xl shadow-md p-6 space-y-3">
-                        <h3 class="font-bold text-base flex items-center gap-2 text-emerald-400">
-                            <span>📋</span> Hồ sơ mang theo ngày chấm thi
-                        </h3>
-                        <ul class="space-y-2 text-xs sm:text-sm text-slate-200">
-                            <li class="flex items-center gap-2">
-                                <span class="text-emerald-400">✓</span> Tờ bản vẽ phác thảo 2 phương án trên giấy ô ly
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <span class="text-emerald-400">✓</span> Bảng đánh giá 5 tiêu chí & Lập luận khoa học
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <span class="text-emerald-400">✓</span> Bảng danh mục vật tư (BOM) & Nhật ký thực hiện
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <span class="text-emerald-400">✓</span> Thẻ ghi chú tóm tắt ý chính để thuyết trình tự tin
-                            </li>
-                        </ul>
+                    <div class="space-y-3 text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                        <p class="p-3 rounded-2xl bg-blue-50/70 dark:bg-slate-800/80">
+                            <strong class="text-blue-700 dark:text-blue-400">1. Mở đầu (20 giây):</strong> "Kính thưa Ban giám khảo, em xin giới thiệu mô hình <em>Tua-bin phát điện gió mini</em>. Mục tiêu của dự án là chuyển hóa động năng của gió thành điện năng sạch để thắp sáng đèn LED với chi phí tiết kiệm trong khoảng 100.000 đến 200.000 đồng."
+                        </p>
+                        <p class="p-3 rounded-2xl bg-emerald-50/70 dark:bg-slate-800/80">
+                            <strong class="text-emerald-700 dark:text-emerald-400">2. Vì sao chọn Phương án 1 (50 giây):</strong> "Sau khi so sánh 2 phương án trên thang 100 điểm, chúng em chọn Phương án 1 (đạt 95 điểm). Về khí động học, cánh quạt 8 cánh đường kính 120mm đón gió đều và tạo mô-men quay lớn. Củ phát nam châm vĩnh cửu V2 Pro biến cơ năng thành dòng điện một chiều ổn định làm sáng rõ đèn LED COB. Khung tháp gỗ CNC 4 chân có thanh giằng và đế rộng giúp hạ thấp trọng tâm, đứng vững trước gió mạnh, đồng thời dây điện được đi ngầm rất gọn gàng và an toàn."
+                        </p>
+                        <p class="p-3 rounded-2xl bg-amber-50/70 dark:bg-slate-800/80">
+                            <strong class="text-amber-700 dark:text-amber-400">3. Kết thúc & Vận hành thử (30 giây):</strong> "Tổng chi phí linh kiện của mô hình chỉ khoảng 73.000 – 145.000 đồng. Sau đây em xin phép bật quạt để Ban giám khảo quan sát trực tiếp khả năng phát điện của mô hình ạ!"
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 4 Thẻ lật (Flashcards) câu hỏi phản biện thường gặp của Giám khảo -->
+                <div class="lg:col-span-6 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-extrabold text-slate-900 dark:text-white text-base">💡 Thẻ câu hỏi phản biện từ Giám khảo (Bấm vào thẻ để lật đáp án)</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5" id="flashcards-container">
+                        <!-- Render 4 thẻ lật qua JS -->
                     </div>
                 </div>
             </div>
@@ -937,122 +907,686 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 mt-12 py-6 no-print">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs sm:text-sm text-slate-500">
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 mt-12 py-6 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
             <div>
-                <strong class="text-slate-700">Hồ sơ Dự án STEM Lớp 7:</strong> Mô hình Tua-bin phát điện gió mini (Phương án 1: Khung gỗ CNC & Củ phát V2 Pro)
+                <strong class="text-slate-800 dark:text-slate-200">Hồ sơ Dự án STEM Lớp 7:</strong> Mô hình Tua-bin phát điện gió mini (Phương án 1: Khung gỗ CNC & Củ phát V2 Pro)
             </div>
-            <div class="text-emerald-700 font-semibold">
-                Trạng thái: Hoàn thành Giai đoạn 4 • Sẵn sàng Giai đoạn 5
+            <div class="text-emerald-600 dark:text-emerald-400 font-semibold">
+                Tiến độ: Hoàn thành Giai đoạn 4 • Sẵn sàng Giai đoạn 5
             </div>
         </div>
     </footer>
 
-    <!-- JavaScript điều khiển mô phỏng SVG tua-bin & chế độ thuyết trình -->
     <script>
-        // Quản lý hoạt ảnh quay cánh quạt 8 cánh và độ sáng LED COB
-        const windSlider = document.getElementById('wind-slider');
-        const windValueText = document.getElementById('wind-value-text');
-        const voltageReadout = document.getElementById('voltage-readout');
-        const brightnessReadout = document.getElementById('brightness-readout');
-        const simStatusBadge = document.getElementById('sim-status-badge');
-        const rotorBlades = document.getElementById('rotor-blades');
-        const ledHalo = document.getElementById('led-halo');
-        const ledChip = document.getElementById('led-chip');
-        const windLines = document.getElementById('wind-lines');
-
-        let currentAngle = 0;
-        let windPercent = 55;
-
-        function updateSimulationUI(val) {
-            windPercent = Number(val);
-
-            // Cập nhật nhãn mức gió & điện áp ước tính
-            let levelLabel = '';
-            let voltage = 0;
-            let brightnessText = '';
-            let badgeText = '';
-
-            if (windPercent === 0) {
-                levelLabel = '0% (Không gió)';
-                voltage = '0.0 V';
-                brightnessText = 'Tắt';
-                badgeText = 'Đứng yên • Chưa phát điện';
-                simStatusBadge.className = 'text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600';
-            } else if (windPercent < 30) {
-                levelLabel = `${windPercent}% (Gió nhẹ)`;
-                voltage = `~${(windPercent * 0.055).toFixed(1)} V`;
-                brightnessText = 'Sáng mờ';
-                badgeText = 'Gió nhẹ • Bắt đầu phát điện';
-                simStatusBadge.className = 'text-xs font-semibold px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700';
-            } else if (windPercent <= 75) {
-                levelLabel = `${windPercent}% (Gió vừa)`;
-                voltage = `~${(1.2 + windPercent * 0.04).toFixed(1)} V`;
-                brightnessText = 'Sáng rõ';
-                badgeText = 'Gió vừa • Đèn sáng ổn định';
-                simStatusBadge.className = 'text-xs font-semibold px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700';
-            } else {
-                levelLabel = `${windPercent}% (Gió mạnh)`;
-                voltage = `~${(1.5 + windPercent * 0.045).toFixed(1)} V`;
-                brightnessText = 'Sáng rực';
-                badgeText = 'Gió mạnh • Công suất tối đa';
-                simStatusBadge.className = 'text-xs font-semibold px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700';
-            }
-
-            windValueText.textContent = levelLabel;
-            voltageReadout.textContent = voltage;
-            brightnessReadout.textContent = brightnessText;
-            simStatusBadge.textContent = badgeText;
-
-            // Điều chỉnh độ sáng hào quang và chip LED COB
-            const glowOpacity = windPercent === 0 ? 0 : Math.min(1, 0.15 + (windPercent / 100) * 0.85);
-            const haloRadius = 14 + (windPercent / 100) * 34;
-            ledHalo.setAttribute('opacity', glowOpacity.toFixed(2));
-            ledHalo.setAttribute('r', haloRadius.toFixed(1));
-
-            if (windPercent === 0) {
-                ledChip.setAttribute('fill', '#94a3b8');
-                windLines.style.opacity = '0';
-            } else if (windPercent < 30) {
-                ledChip.setAttribute('fill', '#fef08a');
-                windLines.style.opacity = '0.45';
-            } else {
-                ledChip.setAttribute('fill', '#ffffff');
-                windLines.style.opacity = '0.95';
-            }
-        }
-
-        // Vòng lặp quay cánh quạt mượt mà theo tốc độ gió
-        function animateTurbine() {
-            if (windPercent > 0) {
-                // Tốc độ góc tỷ lệ thuận với tốc độ gió
-                const angularVelocity = (windPercent / 100) * 9.5;
-                currentAngle = (currentAngle + angularVelocity) % 360;
-                rotorBlades.setAttribute('transform', `rotate(${currentAngle})`);
-            }
-            requestAnimationFrame(animateTurbine);
-        }
-
-        windSlider.addEventListener('input', (e) => {
-            updateSimulationUI(e.target.value);
+        /* ============================================================================
+           1. QUẢN LÝ THANH TIẾN ĐỘ ĐỌC, GIAO DIỆN SÁNG/TỐI, THUYẾT TRÌNH & TÊN NHÓM
+           ============================================================================ */
+        window.addEventListener('scroll', () => {
+            const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+            document.getElementById('reading-progress').style.width = scrolled + '%';
         });
 
-        // Bật/tắt chế độ thuyết trình gọn gàng
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            const isDark = html.classList.contains('dark');
+            document.getElementById('theme-icon').textContent = isDark ? '☀️' : '🌙';
+            localStorage.setItem('stem_wind_theme', isDark ? 'dark' : 'light');
+        }
+
         function togglePresentationMode() {
-            const body = document.body;
-            const label = document.getElementById('presentation-label');
-            body.classList.toggle('presentation-mode');
-            if (body.classList.contains('presentation-mode')) {
-                label.textContent = 'Thoát trình chiếu';
-            } else {
-                label.textContent = 'Thuyết trình';
+            document.body.classList.toggle('presentation-mode');
+            const isPres = document.body.classList.contains('presentation-mode');
+            document.getElementById('presentation-label').textContent = isPres ? 'Thoát chiếu' : 'Thuyết trình';
+        }
+
+        function toggleTeamModal() {
+            document.getElementById('team-modal').classList.toggle('hidden');
+        }
+
+        function saveTeamInfo() {
+            const name = document.getElementById('input-student-name').value.trim() || 'Học sinh / Nhóm STEM Lớp 7';
+            const cls = document.getElementById('input-student-class').value.trim() || '7A';
+            const school = document.getElementById('input-student-school').value.trim() || 'Trường THCS';
+
+            localStorage.setItem('stem_team_info', JSON.stringify({ name, cls, school }));
+            applyTeamInfo();
+            toggleTeamModal();
+        }
+
+        function applyTeamInfo() {
+            const saved = JSON.parse(localStorage.getItem('stem_team_info') || 'null');
+            if (saved) {
+                document.getElementById('display-student-name').textContent = saved.name;
+                document.getElementById('display-student-class').textContent = saved.cls;
+                document.getElementById('display-student-school').textContent = saved.school;
+                document.getElementById('header-team-subtitle').textContent = `${saved.name} (${saved.cls})`;
+                document.getElementById('input-student-name').value = saved.name;
+                document.getElementById('input-student-class').value = saved.cls;
+                document.getElementById('input-student-school').value = saved.school;
             }
         }
 
-        // Khởi chạy ban đầu khi trang tải xong
+        /* ============================================================================
+           2. MÔ PHỎNG TUA-BIN GIÓ SVG 2D & BIỂU ĐỒ LIVE CANVAS
+           ============================================================================ */
+        let windMs = 8.0;
+        let bladeCount = 8;
+        let isCorrectPolarity = true;
+        let isXray = false;
+        let rotorAngle = 0;
+
+        // Dữ liệu biểu đồ live (35 điểm gần nhất)
+        const chartHistory = {
+            voltage: Array(35).fill(3.6),
+            power: Array(35).fill(4.14)
+        };
+
+        function drawRotorBlades(count) {
+            const container = document.getElementById('rotor-blades');
+            let html = '';
+            const step = 360 / count;
+            for (let i = 0; i < count; i++) {
+                const angle = i * step;
+                html += `
+                    <g transform="rotate(${angle})">
+                        <path d="M 0,-4 L 6,-62 C 12,-66 16,-58 12,-46 L 4,-4 Z" fill="url(#bladeGrad)" stroke="#065f46" stroke-width="1.2" />
+                    </g>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        function setBladeCount(count) {
+            bladeCount = count;
+            drawRotorBlades(count);
+            document.querySelectorAll('.blade-btn').forEach(btn => {
+                const b = Number(btn.dataset.blades);
+                if (b === count) {
+                    btn.className = 'blade-btn py-1.5 px-2 rounded-xl text-xs font-extrabold border-2 border-emerald-500 bg-emerald-50 text-emerald-800';
+                } else {
+                    btn.className = 'blade-btn py-1.5 px-2 rounded-xl text-xs font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300';
+                }
+            });
+            updateSimulation();
+        }
+
+        function setWindPreset(val) {
+            document.getElementById('wind-slider').value = val;
+            windMs = val;
+            updateSimulation();
+        }
+
+        function togglePolarity() {
+            isCorrectPolarity = !isCorrectPolarity;
+            const btn = document.getElementById('btn-polarity');
+            const warn = document.getElementById('polarity-warning');
+            const label = document.getElementById('led-polarity-label');
+
+            if (isCorrectPolarity) {
+                btn.className = 'w-full py-1.5 px-3 rounded-xl text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700 transition flex items-center justify-center gap-1.5';
+                btn.innerHTML = '<span>🔌</span> Cực LED: Đúng chiều (+/-)';
+                warn.classList.add('hidden');
+                label.textContent = 'LED COB (+ / -)';
+                label.setAttribute('fill', '#059669');
+            } else {
+                btn.className = 'w-full py-1.5 px-3 rounded-xl text-xs font-bold bg-rose-600 text-white hover:bg-rose-700 transition flex items-center justify-center gap-1.5';
+                btn.innerHTML = '<span>⚠️</span> Cực LED: Ngược chiều (- / +)';
+                warn.classList.remove('hidden');
+                label.textContent = 'NGƯỢC CỰC (- / +)';
+                label.setAttribute('fill', '#dc2626');
+            }
+            updateSimulation();
+        }
+
+        function toggleXray() {
+            isXray = !isXray;
+            const wood = document.getElementById('wood-structure');
+            const label = document.getElementById('xray-label');
+            const btn = document.getElementById('btn-xray');
+
+            if (isXray) {
+                wood.style.opacity = '0.22';
+                label.setAttribute('opacity', '1');
+                btn.textContent = '🔍 X-Ray dây ngầm: BẬT';
+                btn.classList.add('bg-blue-600', 'text-white');
+            } else {
+                wood.style.opacity = '1';
+                label.setAttribute('opacity', '0');
+                btn.textContent = '🔍 X-Ray dây ngầm: TẮT';
+                btn.classList.remove('bg-blue-600', 'text-white');
+            }
+        }
+
+        function updateSimulation() {
+            windMs = parseFloat(document.getElementById('wind-slider').value);
+            document.getElementById('wind-speed-ms').textContent = `${windMs.toFixed(1)} m/s`;
+
+            // Hệ số hiệu suất theo số cánh (8 cánh chuẩn 120mm đạt mô-men khởi động & ổn định tốt nhất)
+            const bladeEfficiency = bladeCount === 8 ? 1.0 : (bladeCount === 5 ? 0.84 : 0.68);
+            const rpm = windMs === 0 ? 0 : Math.round(windMs * 80 * bladeEfficiency);
+            const voltage = windMs === 0 ? 0 : +(windMs * 0.45 * bladeEfficiency).toFixed(2);
+            const currentMa = (!isCorrectPolarity || voltage < 1.8) ? 0 : Math.round((voltage - 1.5) * 55);
+            const powerMw = Math.round(voltage * currentMa);
+
+            document.getElementById('meter-voltage').textContent = `${voltage.toFixed(1)} V`;
+            document.getElementById('meter-current').textContent = `${currentMa} mA`;
+            document.getElementById('meter-power').textContent = `${powerMw} mW`;
+            document.getElementById('meter-rpm').textContent = rpm;
+
+            // Cập nhật ánh sáng đèn LED COB & luồng gió
+            const ledHalo = document.getElementById('led-halo');
+            const ledChip = document.getElementById('led-chip');
+            const badge = document.getElementById('sim-badge');
+            const windLines = document.getElementById('wind-lines');
+
+            if (windMs === 0) {
+                windLines.style.opacity = '0';
+            } else {
+                windLines.style.opacity = Math.min(1, 0.3 + windMs / 15).toFixed(2);
+            }
+
+            if (!isCorrectPolarity && windMs > 0) {
+                ledHalo.setAttribute('opacity', '0');
+                ledChip.setAttribute('fill', '#64748b');
+                badge.textContent = 'Ngược cực (+/-) • Đèn không sáng';
+                badge.className = 'text-xs font-bold px-3 py-1 rounded-full bg-rose-100 text-rose-800';
+            } else if (voltage < 1.8) {
+                ledHalo.setAttribute('opacity', '0');
+                ledChip.setAttribute('fill', '#94a3b8');
+                badge.textContent = windMs === 0 ? 'Tắt gió • Đứng yên' : 'Gió quá nhẹ • Chưa đủ áp mở LED';
+                badge.className = 'text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-700';
+            } else if (voltage < 4.2) {
+                const ratio = (voltage - 1.8) / 2.4;
+                ledHalo.setAttribute('opacity', (0.35 + ratio * 0.5).toFixed(2));
+                ledHalo.setAttribute('r', (22 + ratio * 16).toFixed(1));
+                ledChip.setAttribute('fill', '#fef08a');
+                badge.textContent = 'Gió vừa • LED COB sáng ổn định';
+                badge.className = 'text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800';
+            } else {
+                ledHalo.setAttribute('opacity', '0.98');
+                ledHalo.setAttribute('r', '44');
+                ledChip.setAttribute('fill', '#ffffff');
+                badge.textContent = 'Gió mạnh • LED COB sáng rực';
+                badge.className = 'text-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-800';
+            }
+        }
+
+        function animateLoop() {
+            const bladeEfficiency = bladeCount === 8 ? 1.0 : (bladeCount === 5 ? 0.84 : 0.68);
+            if (windMs > 0) {
+                const speed = (windMs / 15) * 11 * bladeEfficiency;
+                rotorAngle = (rotorAngle + speed) % 360;
+                document.getElementById('rotor-blades').setAttribute('transform', `rotate(${rotorAngle})`);
+            }
+            requestAnimationFrame(animateLoop);
+        }
+
+        // Vẽ biểu đồ live mỗi 350ms
+        function updateLiveChart() {
+            const vText = parseFloat(document.getElementById('meter-voltage').textContent) || 0;
+            const pText = parseFloat(document.getElementById('meter-power').textContent) || 0;
+
+            chartHistory.voltage.push(vText);
+            chartHistory.voltage.shift();
+            chartHistory.power.push(pText / 100); // Scale chia 100mW để cùng trục 0-8
+            chartHistory.power.shift();
+
+            const canvas = document.getElementById('live-chart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+
+            const w = canvas.width;
+            const h = canvas.height;
+            ctx.clearRect(0, 0, w, h);
+
+            // Lưới ngang
+            ctx.strokeStyle = 'rgba(148, 163, 184, 0.25)';
+            ctx.lineWidth = 1;
+            for (let i = 1; i <= 3; i++) {
+                const y = (h / 4) * i;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(w, y);
+                ctx.stroke();
+            }
+
+            const drawSeries = (data, color) => {
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                data.forEach((val, idx) => {
+                    const x = (idx / (data.length - 1)) * w;
+                    const clamped = Math.min(8, Math.max(0, val));
+                    const y = h - 10 - (clamped / 8) * (h - 20);
+                    if (idx === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                });
+                ctx.stroke();
+            };
+
+            drawSeries(chartHistory.voltage, '#2563eb');
+            drawSeries(chartHistory.power, '#f59e0b');
+        }
+
+        /* ============================================================================
+           3. BẢN VẼ PHÁC THẢO KỸ THUẬT (BẬT/TẮT CHÚ THÍCH)
+           ============================================================================ */
+        let showBlueprintLabels = true;
+        function toggleBlueprintLabels() {
+            showBlueprintLabels = !showBlueprintLabels;
+            document.querySelectorAll('.blueprint-labels').forEach(g => {
+                g.style.display = showBlueprintLabels ? 'block' : 'none';
+            });
+        }
+
+        /* ============================================================================
+           4. BẢNG CHẤM ĐIỂM 5 TIÊU CHÍ TƯƠNG TÁC
+           ============================================================================ */
+        const rubricCriteria = [
+            {
+                id: 1,
+                name: 'Kết cấu & Độ ổn định',
+                max: 20,
+                pa1: 20,
+                pa2: 13,
+                note1: 'Khung gỗ ghép mộng chắc chắn, chân đế rộng hạ thấp trọng tâm nên đứng vững và ít rung khi có gió.',
+                note2: 'Thân ống hút/ống nhựa và đế carton nhẹ nên dễ nghiêng lắc hoặc lung lay khi gặp gió mạnh.'
+            },
+            {
+                id: 2,
+                name: 'Hiệu suất phát điện',
+                max: 30,
+                pa1: 29,
+                pa2: 16,
+                note1: 'Cánh 8 cánh 120mm đón gió tốt kết hợp củ phát V2 Pro cho dòng điện ổn định, đèn LED COB sáng rõ.',
+                note2: 'Cánh thủ công dễ lệch tâm, motor mini tận dụng khó tạo điện ổn định khi gió nhẹ.'
+            },
+            {
+                id: 3,
+                name: 'Độ bền & An toàn',
+                max: 20,
+                pa1: 19,
+                pa2: 12,
+                note1: 'Gỗ cứng cáp chịu va đập tốt, dây điện đi ngầm gọn gàng nên an toàn khi di chuyển và trưng bày.',
+                note2: 'Bìa carton và mối keo dễ bong khi va chạm; dây đi ngoài dễ vướng víu hoặc tuột mối nối.'
+            },
+            {
+                id: 4,
+                name: 'Tính kinh tế & Môi trường',
+                max: 15,
+                pa1: 12,
+                pa2: 15,
+                note1: 'Chi phí nằm gọn trong ngân sách dự án, dùng gỗ thân thiện môi trường và tái sử dụng nhiều lần.',
+                note2: 'Chi phí rất thấp (dưới 30.000đ), tận dụng đồ tái chế nên nổi bật về tiết kiệm chi phí.'
+            },
+            {
+                id: 5,
+                name: 'Tính thẩm mỹ',
+                max: 15,
+                pa1: 15,
+                pa2: 10,
+                note1: 'Các chi tiết cắt CNC sắc nét, bố cục gọn gàng, sạch sẽ, nhìn chuyên nghiệp trên bàn thi.',
+                note2: 'Mang nét thủ công đơn giản, nhưng vết cắt nhựa và mối dán khó đạt độ đều đẹp cao.'
+            }
+        ];
+
+        function renderRubricTable() {
+            const tbody = document.getElementById('rubric-tbody');
+            tbody.innerHTML = rubricCriteria.map((c, idx) => `
+                <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40">
+                    <td class="py-3.5 px-4 text-center font-bold text-slate-500">${c.id}</td>
+                    <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white">${c.name}</td>
+                    <td class="py-3.5 px-4 text-center font-semibold text-slate-600 dark:text-slate-400">${c.max}đ</td>
+                    <td class="py-3.5 px-4 bg-emerald-50/30 dark:bg-emerald-950/20">
+                        <div class="flex items-center justify-between font-bold text-emerald-700 dark:text-emerald-400 mb-1">
+                            <span><span id="pa1-val-${idx}">${c.pa1}</span> / ${c.max}đ</span>
+                            <input type="range" min="0" max="${c.max}" value="${c.pa1}" oninput="updateRubricScore(${idx}, 'pa1', this.value)" class="w-24 no-print">
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">${c.note1}</p>
+                    </td>
+                    <td class="py-3.5 px-4">
+                        <div class="flex items-center justify-between font-bold text-slate-700 dark:text-slate-300 mb-1">
+                            <span><span id="pa2-val-${idx}">${c.pa2}</span> / ${c.max}đ</span>
+                            <input type="range" min="0" max="${c.max}" value="${c.pa2}" oninput="updateRubricScore(${idx}, 'pa2', this.value)" class="w-24 no-print">
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">${c.note2}</p>
+                    </td>
+                </tr>
+            `).join('');
+            recalcRubricTotals();
+        }
+
+        function updateRubricScore(idx, paKey, val) {
+            rubricCriteria[idx][paKey] = Number(val);
+            document.getElementById(`${paKey}-val-${idx}`).textContent = val;
+            recalcRubricTotals();
+        }
+
+        function recalcRubricTotals() {
+            const t1 = rubricCriteria.reduce((s, c) => s + c.pa1, 0);
+            const t2 = rubricCriteria.reduce((s, c) => s + c.pa2, 0);
+            document.getElementById('total-pa1').textContent = t1;
+            document.getElementById('total-pa2').textContent = t2;
+
+            const diff = t1 - t2;
+            const verdict = document.getElementById('rubric-verdict');
+            if (diff >= 0) {
+                verdict.textContent = `🏆 Kết luận tự động: Phương án 1 dẫn trước +${diff} điểm (${t1}đ so với ${t2}đ) → Là lựa chọn tối ưu nhất cho cuộc thi STEM!`;
+            } else {
+                verdict.textContent = `📌 Ghi chú chấm thử: Phương án 2 đang cao hơn +${Math.abs(diff)} điểm (${t2}đ so với ${t1}đ).`;
+            }
+        }
+
+        function resetRubricScores() {
+            const defaults = [[20,13], [29,16], [19,12], [12,15], [15,10]];
+            rubricCriteria.forEach((c, i) => {
+                c.pa1 = defaults[i][0];
+                c.pa2 = defaults[i][1];
+            });
+            renderRubricTable();
+        }
+
+        /* ============================================================================
+           5. MÁY TÍNH VẬT LÝ & KỸ THUẬT STEM
+           ============================================================================ */
+        function calculateStemPhysics() {
+            const dMm = parseFloat(document.getElementById('calc-diameter').value) || 0;
+            const force = parseFloat(document.getElementById('calc-force').value) || 0;
+            const u = parseFloat(document.getElementById('calc-u').value) || 0;
+            const iMa = parseFloat(document.getElementById('calc-i').value) || 0;
+
+            const rCm = (dMm / 10) / 2;
+            const rM = (dMm / 1000) / 2;
+            const areaCm2 = Math.PI * rCm * rCm;
+            const torqueNm = force * rM;
+            const powerMw = u * iMa;
+
+            document.getElementById('res-area').textContent = `${areaCm2.toFixed(2)} cm²`;
+            document.getElementById('res-torque').textContent = `${torqueNm.toFixed(4)} N·m`;
+            document.getElementById('res-power').textContent = `${powerMw.toFixed(1)} mW`;
+        }
+
+        /* ============================================================================
+           6. DANH MỤC VẬT TƯ (BOM) TƯƠNG TÁC & CHECKLIST LẮP RÁP
+           ============================================================================ */
+        const bomItems = [
+            { stt: 1, name: 'Củ phát điện DC V2 Pro', spec: 'Nam châm vĩnh cửu, 0.1V–22V, trục 2mm', qty: '1', source: 'shopee', sourceText: 'Đặt Shopee', est: '25.000 – 40.000đ', actual: 32000 },
+            { stt: 2, name: 'Cánh quạt nhựa PP 8 cánh 120mm', spec: 'Đúc nguyên khối, Ø 120mm, lỗ trục 2mm', qty: '1', source: 'shopee', sourceText: 'Đặt Shopee', est: '10.000 – 20.000đ', actual: 15000 },
+            { stt: 3, name: 'Bộ khung tháp & đế gỗ cắt CNC', spec: 'Gỗ ép cắt Laser CNC 4 chân + đế vuông', qty: '1 bộ', source: 'shopee', sourceText: 'Đặt Shopee', est: '25.000 – 45.000đ', actual: 35000 },
+            { stt: 4, name: 'Module đèn LED COB 3V–5V', spec: 'LED COB siêu sáng điện áp thấp', qty: '1', source: 'shopee', sourceText: 'Đặt Shopee', est: '5.000 – 15.000đ', actual: 10000 },
+            { stt: 5, name: 'Dây dẫn điện lõi đồng mềm', spec: 'Dây đôi bọc cách điện (0.5m – 1m)', qty: '1 đoạn', source: 'home', sourceText: 'Có sẵn / Tiệm điện', est: '3.000 – 5.000đ', actual: 5000 },
+            { stt: 6, name: 'Keo nến / Keo dán gỗ & Băng keo điện', spec: 'Cố định mối ghép & cách điện đầu nối', qty: '1 ít', source: 'home', sourceText: 'Có sẵn tại nhà', est: '5.000 – 10.000đ', actual: 8000 }
+        ];
+
+        let currentBomFilter = 'all';
+
+        function renderBomTable() {
+            const tbody = document.getElementById('bom-tbody');
+            const filtered = bomItems.filter(item => currentBomFilter === 'all' || item.source === currentBomFilter);
+
+            tbody.innerHTML = filtered.map(item => `
+                <tr class="hover:bg-blue-50/40 dark:hover:bg-slate-800/40">
+                    <td class="py-3 px-4 text-center font-bold text-slate-500">${item.stt}</td>
+                    <td class="py-3 px-4 font-bold text-slate-900 dark:text-white">${item.name}</td>
+                    <td class="py-3 px-4 text-slate-600 dark:text-slate-300 text-xs sm:text-sm">${item.spec}</td>
+                    <td class="py-3 px-4 text-center font-semibold">${item.qty}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold ${item.source === 'shopee' ? 'bg-orange-100 text-orange-800' : 'bg-emerald-100 text-emerald-800'}">
+                            ${item.sourceText}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-right text-slate-500 text-xs sm:text-sm">${item.est}</td>
+                    <td class="py-3 px-4 text-right">
+                        <input type="number" step="1000" value="${item.actual}" oninput="updateBomActual(${item.stt}, this.value)" class="w-28 text-right font-bold px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white">
+                    </td>
+                </tr>
+            `).join('');
+            recalcBomTotal();
+        }
+
+        function filterBom(type) {
+            currentBomFilter = type;
+            document.querySelectorAll('.bom-filter-btn').forEach(btn => {
+                if (btn.dataset.filter === type) {
+                    btn.className = 'bom-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-600 text-white';
+                } else {
+                    btn.className = 'bom-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300';
+                }
+            });
+            renderBomTable();
+        }
+
+        function updateBomActual(stt, val) {
+            const item = bomItems.find(i => i.stt === stt);
+            if (item) item.actual = Number(val) || 0;
+            recalcBomTotal();
+        }
+
+        function recalcBomTotal() {
+            const total = bomItems.reduce((sum, i) => sum + i.actual, 0);
+            document.getElementById('bom-actual-total').textContent = total.toLocaleString('vi-VN');
+            const status = document.getElementById('bom-budget-status');
+            if (total <= 200000) {
+                status.innerHTML = `<span>✅ Hợp lệ ngân sách: Tổng chi phí thực tế <strong>${total.toLocaleString('vi-VN')}đ</strong> nằm gọn trong hạn mức 100.000 – 200.000 VNĐ.</span><span>💡 Mẹo: Gom 4 món chính trên cùng 1 shop Shopee để tiết kiệm phí ship.</span>`;
+            } else {
+                status.innerHTML = `<span class="text-rose-700">⚠️ Vượt ngân sách dự kiến (200.000đ): Hãy kiểm tra lại đơn giá linh kiện nhé!</span>`;
+            }
+        }
+
+        // Checklist 4 nhóm lưu localStorage
+        const checklistGroups = [
+            {
+                title: '1. Linh kiện chính (Shopee)',
+                items: ['Củ phát DC V2 Pro (trục 2mm)', 'Cánh quạt 8 cánh 120mm (lỗ 2mm)', 'Khung tháp & đế gỗ cắt CNC', 'Đèn LED COB 3V–5V & dây dẫn']
+            },
+            {
+                title: '2. Dụng cụ gia cố tại nhà',
+                items: ['Keo nến / Súng bắn keo hoặc keo gỗ', 'Băng keo điện bọc cách điện mối nối', 'Kéo hoặc dao rọc giấy tuốt dây']
+            },
+            {
+                title: '3. Đồ kiểm thử (Test)',
+                items: ['Quạt bàn / Quạt mini thử 3 mức gió', 'Kiểm tra đúng cực (+/-) trước khi dán']
+            },
+            {
+                title: '4. Hồ sơ giấy mang thi',
+                items: ['Bản vẽ phác thảo 2 PA trên giấy ô ly', 'Bảng điểm 5 tiêu chí & Lập luận khoa học', 'Bảng BOM, Nhật ký & Thẻ thuyết trình']
+            }
+        ];
+
+        function renderChecklist() {
+            const saved = JSON.parse(localStorage.getItem('stem_wind_checklist') || '{}');
+            const grid = document.getElementById('checklist-grid');
+            let total = 0;
+            let checkedCount = 0;
+
+            grid.innerHTML = checklistGroups.map((group, gIdx) => {
+                const listHtml = group.items.map((text, iIdx) => {
+                    const key = `g${gIdx}_i${iIdx}`;
+                    total++;
+                    const isChecked = !!saved[key];
+                    if (isChecked) checkedCount++;
+                    return `
+                        <label class="flex items-start gap-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer select-none">
+                            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleCheckItem('${key}')" class="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500">
+                            <span class="${isChecked ? 'line-through text-slate-400' : ''}">${text}</span>
+                        </label>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700 space-y-2.5">
+                        <div class="font-bold text-xs text-blue-700 dark:text-blue-400">${group.title}</div>
+                        <div class="space-y-2">${listHtml}</div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('checklist-progress-text').textContent = `Đã xong: ${checkedCount} / ${total} mục`;
+        }
+
+        function toggleCheckItem(key) {
+            const saved = JSON.parse(localStorage.getItem('stem_wind_checklist') || '{}');
+            saved[key] = !saved[key];
+            localStorage.setItem('stem_wind_checklist', JSON.stringify(saved));
+            renderChecklist();
+        }
+
+        function resetChecklist() {
+            localStorage.removeItem('stem_wind_checklist');
+            renderChecklist();
+        }
+
+        /* ============================================================================
+           7. NHẬT KÝ TIẾN ĐỘ GIAI ĐOẠN 5 TỰ THÊM
+           ============================================================================ */
+        function renderCustomLogs() {
+            const logs = JSON.parse(localStorage.getItem('stem_custom_logs') || '[]');
+            const container = document.getElementById('custom-logs-container');
+            container.innerHTML = logs.map((log, index) => `
+                <div class="relative pl-6 pt-2">
+                    <span class="absolute -left-[11px] top-3 w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs font-bold">5</span>
+                    <div class="bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-3.5">
+                        <div class="flex items-center justify-between gap-2">
+                            <h4 class="font-bold text-amber-900 dark:text-amber-300 text-xs sm:text-sm">${log.title}</h4>
+                            <button onclick="deleteCustomLog(${index})" class="text-xs text-slate-400 hover:text-rose-600 no-print">Xóa</button>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 mt-1">${log.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addCustomLog() {
+            const title = document.getElementById('log-title-input').value.trim();
+            const desc = document.getElementById('log-desc-input').value.trim();
+            if (!title || !desc) return;
+
+            const logs = JSON.parse(localStorage.getItem('stem_custom_logs') || '[]');
+            logs.push({ title, desc });
+            localStorage.setItem('stem_custom_logs', JSON.stringify(logs));
+
+            document.getElementById('log-title-input').value = '';
+            document.getElementById('log-desc-input').value = '';
+            renderCustomLogs();
+        }
+
+        function deleteCustomLog(index) {
+            const logs = JSON.parse(localStorage.getItem('stem_custom_logs') || '[]');
+            logs.splice(index, 1);
+            localStorage.setItem('stem_custom_logs', JSON.stringify(logs));
+            renderCustomLogs();
+        }
+
+        /* ============================================================================
+           8. ĐỒNG HỒ BẤM GIỜ THUYẾT TRÌNH & THẺ PHẢN BIỆN GIÁM KHẢO
+           ============================================================================ */
+        let timerSeconds = 120;
+        let timerInterval = null;
+
+        function updateTimerDisplay() {
+            const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+            const secs = String(timerSeconds % 60).padStart(2, '0');
+            document.getElementById('timer-display').textContent = `${mins}:${secs}`;
+        }
+
+        function toggleTimer() {
+            const btn = document.getElementById('timer-btn');
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                btn.textContent = 'Tiếp tục';
+            } else {
+                btn.textContent = 'Tạm dừng';
+                timerInterval = setInterval(() => {
+                    if (timerSeconds > 0) {
+                        timerSeconds--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        timerInterval = null;
+                        btn.textContent = 'Hết giờ';
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            timerSeconds = 120;
+            updateTimerDisplay();
+            document.getElementById('timer-btn').textContent = 'Bắt đầu';
+        }
+
+        const qaFlashcards = [
+            {
+                q: 'Câu 1: Tại sao nhóm chọn cánh 8 cánh 120mm mà không dùng cánh 3 cánh như tua-bin gió ngoài thực tế?',
+                a: 'Vì ở quy mô mô hình trong phòng học, tốc độ gió từ quạt nhỏ hơn gió tự nhiên. Cánh 8 cánh 120mm tăng diện tích đón gió, tạo mô-men xoắn lớn để thắng ma sát khởi động ban đầu dễ hơn.'
+            },
+            {
+                q: 'Câu 2: Nếu quạt thổi cánh quay nhanh nhưng đèn LED COB vẫn không sáng thì nguyên nhân do đâu?',
+                a: 'Nguyên nhân phổ biến nhất là nối ngược cực (+/-) của đèn LED COB (vì LED là diode chỉ dẫn điện một chiều), hoặc lỏng mối nối dây dẫn từ củ phát V2 Pro.'
+            },
+            {
+                q: 'Câu 3: Làm thế nào để mô hình không bị đổ hoặc rung lắc khi bật quạt số mạnh nhất?',
+                a: 'Nhóm thiết kế khung tháp 4 chân có thanh giằng ngang/chéo kết hợp chân đế gỗ vuông bản rộng để hạ thấp trọng tâm mô hình và tăng diện tích mặt chân đế.'
+            },
+            {
+                q: 'Câu 4: Tại sao không chọn Phương án 2 làm từ đồ tái chế cho rẻ tiền hơn?',
+                a: 'Phương án 2 tuy rẻ (<30.000đ) nhưng vỏ chai nhựa và bìa carton dễ lệch tâm, rung lắc và điện áp yếu (66/100đ). Phương án 1 đạt 95/100đ, hoạt động ổn định và vẫn nằm gọn trong ngân sách.'
+            }
+        ];
+
+        function renderFlashcards() {
+            const container = document.getElementById('flashcards-container');
+            container.innerHTML = qaFlashcards.map(card => `
+                <div onclick="this.classList.toggle('flipped')" class="flashcard cursor-pointer h-44 perspective-1000">
+                    <div class="flashcard-inner relative w-full h-full">
+                        <div class="flashcard-front absolute inset-0 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm flex flex-col justify-between">
+                            <span class="text-[11px] font-bold text-blue-600 uppercase">Câu hỏi Giám khảo</span>
+                            <p class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 leading-snug">${card.q}</p>
+                            <span class="text-[11px] text-slate-400">👆 Bấm để xem gợi ý trả lời</span>
+                        </div>
+                        <div class="flashcard-back absolute inset-0 bg-emerald-600 text-white rounded-2xl p-4 shadow-md flex flex-col justify-between">
+                            <span class="text-[11px] font-bold text-emerald-100 uppercase">Gợi ý trả lời chuẩn</span>
+                            <p class="text-xs leading-relaxed font-medium">${card.a}</p>
+                            <span class="text-[11px] text-emerald-200">👆 Bấm để lật lại câu hỏi</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* ============================================================================
+           KHỞI TẠO TOÀN BỘ ỨNG DỤNG KHI TẢI TRANG
+           ============================================================================ */
         window.addEventListener('load', () => {
-            updateSimulationUI(windSlider.value);
-            animateTurbine();
+            if (localStorage.getItem('stem_wind_theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.getElementById('theme-icon').textContent = '☀️';
+            }
+
+            applyTeamInfo();
+            drawRotorBlades(8);
+            updateSimulation();
+            animateLoop();
+            setInterval(updateLiveChart, 350);
+
+            document.getElementById('wind-slider').addEventListener('input', updateSimulation);
+
+            renderRubricTable();
+            calculateStemPhysics();
+            renderBomTable();
+            renderChecklist();
+            renderCustomLogs();
+            renderFlashcards();
         });
     </script>
 </body>
